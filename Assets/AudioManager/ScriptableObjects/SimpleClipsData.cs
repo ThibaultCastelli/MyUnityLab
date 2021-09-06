@@ -23,6 +23,19 @@ namespace AudioThibaultCastelli
             source.pitch = pitch;
             source.reverbZoneMix = reverbZonMix;
         }
+
+        // Used only to preview on the inspector
+        public override void Preview(AudioSource source)
+        {
+            base.Preview(source);
+
+            source.volume = volume;
+            source.panStereo = pan;
+            source.pitch = pitch;
+            source.reverbZoneMix = reverbZonMix;
+
+            source.Play();
+        }
         #endregion
     }
 }

@@ -54,6 +54,27 @@ namespace AudioThibaultCastelli
 
             source.priority = priority;
         }
+
+        // Used only to preview on the inspector
+        public virtual void Preview(AudioSource source)
+        {
+            if (clips.Count == 0)
+            {
+                Debug.LogError($"ERROR : There is no audio clip for '{name}'.");
+                return;
+            }
+
+            source.clip = clips[Random.Range(0, clips.Count)];
+            source.outputAudioMixerGroup = mixerGroup;
+
+            source.playOnAwake = playOnAwake;
+            source.loop = loop;
+            source.mute = mute;
+            source.bypassEffects = bypassEffects;
+            source.bypassReverbZones = bypassReverbZones;
+
+            source.priority = priority;
+        }
         #endregion
     }
 }

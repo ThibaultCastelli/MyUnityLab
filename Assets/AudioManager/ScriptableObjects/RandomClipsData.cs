@@ -34,6 +34,19 @@ namespace AudioThibaultCastelli
             source.pitch = Random.Range(minPitch, maxPitch);
             source.reverbZoneMix = Random.Range(minReverbZonMix, maxReverbZonMix);
         }
+
+        // Used only to preview on the inspector
+        public override void Preview(AudioSource source)
+        {
+            base.Preview(source);
+
+            source.volume = Random.Range(minVolume, maxVolume);
+            source.panStereo = Random.Range(minPan, maxPan);
+            source.pitch = Random.Range(minPitch, maxPitch);
+            source.reverbZoneMix = Random.Range(minReverbZonMix, maxReverbZonMix);
+
+            source.Play();
+        }
         #endregion
     }
 }
