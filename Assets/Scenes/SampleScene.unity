@@ -428,7 +428,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   floatReference:
     useConstant: 1
-    constant: 0
+    constant: 10
     reference: {fileID: 11400000, guid: b12d5167790edfd49b93b80bfe94a553, type: 2}
 --- !u!4 &1051325041
 Transform:
