@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace AudioThibaultCastelli
+namespace AudioTC
 {
     // Component used to give all the ClipsData that can be played
     // Also used to set the audio player given by the AudioLocator
@@ -59,7 +59,7 @@ namespace AudioThibaultCastelli
 
                 // Play the audio if it needs to be played on awake
                 if (audio.playOnAwake)
-                    AudioLocator.GetServiceProvider().Play(audio.name);
+                    AudioLocator.GetAudioPlayer().Play(audio.name);
             }
 
             // Initialize flags
@@ -88,16 +88,16 @@ namespace AudioThibaultCastelli
             if (useLoggedAudioPlayer)
             {
                 if (useNullAudioPlayer)
-                    AudioLocator.SetServiceProvider(new LoggedAudioPlayer(this, new NullAudioPlayer(this)));
+                    AudioLocator.SetAudioPlayer(new LoggedAudioPlayer(this, new NullAudioPlayer(this)));
                 else
-                    AudioLocator.SetServiceProvider(new LoggedAudioPlayer(this, new AudioPlayer(this)));
+                    AudioLocator.SetAudioPlayer(new LoggedAudioPlayer(this, new AudioPlayer(this)));
             }
             else if (useNullAudioPlayer)
             {
-                AudioLocator.SetServiceProvider(new NullAudioPlayer(this));
+                AudioLocator.SetAudioPlayer(new NullAudioPlayer(this));
             }
             else
-                AudioLocator.SetServiceProvider(new AudioPlayer(this));
+                AudioLocator.SetAudioPlayer(new AudioPlayer(this));
         }
         #endregion
     }

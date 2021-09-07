@@ -1,5 +1,5 @@
 
-namespace AudioThibaultCastelli
+namespace AudioTC
 {
     // Null audio player to disable all audio without error
     public class NullAudioPlayer : IAudioPlayer

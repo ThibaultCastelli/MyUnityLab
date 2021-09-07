@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace AudioThibaultCastelli
+namespace AudioTC
 {
     // Base class for all audio players
     public abstract class IAudioPlayer

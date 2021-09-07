@@ -1,26 +1,26 @@
 using UnityEngine;
 
-namespace AudioThibaultCastelli
+namespace AudioTC
 {
     [CreateAssetMenu(fileName = "Default Random Clips Data", menuName = "Clips Data/Random Clips Data")]
     public class RandomClipsData : ClipsData
     {
         #region Variables
-        [Space]
-        [Range(0f, 1f)] public float minVolume = 1f;
-        [Range(0f, 1f)] public float maxVolume = 1f;
+        [Tooltip("Select the volume of the clip.\nA random value will be chosen each it will be played.\n0 = no sound | 1 = full sound")]
+        [MinMaxRange(0, 1)]
+        [SerializeField] RangedFloat volume;
 
-        [Space]
-        [Range(-1f, 1f)] public float minPan = 0f;
-        [Range(-1f, 1f)] public float maxPan = 0f;
-        
-        [Space]
-        [Range(0f, 2f)] public float minPitch = 1f;
-        [Range(0f, 2f)] public float maxPitch = 1f;
-        
-        [Space]
-        [Range(0f, 1.1f)] public float minReverbZonMix = 1f;
-        [Range(0f, 1.1f)] public float maxReverbZonMix = 1f;
+        [Tooltip("Select the pan (earing from left or right) of the clip.\nA random value will be chosen each it will be played.\n-1 = left | 0 = center | 1 = right")]
+        [MinMaxRange(-1, 1)]
+        [SerializeField] RangedFloat pan;
+
+        [Tooltip("Select the pitch (lower or higher frequency) of the clip.\nA random value will be chosen each it will be played.\n0 = low | 1 = normal | 2 = high")]
+        [MinMaxRange(0, 2)]
+        [SerializeField] RangedFloat pitch;
+
+        [Tooltip("Select how much the reverb zone affect the clip.\nA random value will be chosen each it will be played.\n0 = no reverb | 1 = normal")]
+        [MinMaxRange(0, 1.1f)]
+        [SerializeField] RangedFloat reverbZoneMix;
         #endregion
 
         #region Functions
@@ -29,10 +29,10 @@ namespace AudioThibaultCastelli
         {
             base.SetAudioSource();
 
-            source.volume = Random.Range(minVolume, maxVolume);
-            source.panStereo = Random.Range(minPan, maxPan);
-            source.pitch = Random.Range(minPitch, maxPitch);
-            source.reverbZoneMix = Random.Range(minReverbZonMix, maxReverbZonMix);
+            source.volume = Random.Range(volume.minValue, volume.maxValue);
+            source.panStereo = Random.Range(pan.minValue, pan.maxValue);
+            source.pitch = Random.Range(pitch.minValue, pitch.maxValue);
+            source.reverbZoneMix = Random.Range(reverbZoneMix.minValue, reverbZoneMix.maxValue);
         }
 
         // Used only to preview on the inspector
@@ -40,10 +40,10 @@ namespace AudioThibaultCastelli
         {
             base.Preview(source);
 
-            source.volume = Random.Range(minVolume, maxVolume);
-            source.panStereo = Random.Range(minPan, maxPan);
-            source.pitch = Random.Range(minPitch, maxPitch);
-            source.reverbZoneMix = Random.Range(minReverbZonMix, maxReverbZonMix);
+            source.volume = Random.Range(volume.minValue, volume.maxValue);
+            source.panStereo = Random.Range(pan.minValue, pan.maxValue);
+            source.pitch = Random.Range(pitch.minValue, pitch.maxValue);
+            source.reverbZoneMix = Random.Range(reverbZoneMix.minValue, reverbZoneMix.maxValue);
 
             source.Play();
         }

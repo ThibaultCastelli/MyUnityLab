@@ -1,21 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using AudioThibaultCastelli;
+using AudioTC;
 using CustomVariablesTC;
+using UnityEngine.SceneManagement;
 
 public class Test : MonoBehaviour
 {
-    public FloatReference floatReference;
-    public IntReference intRef;
-    public BoolReference boolref;
-    public StringReference stringref;
+    [MinMaxRange(0, 2)]
+    public RangedFloat test;
+    public RangedFloat test2;
+    [MinMaxRange(-1, 4)]
+    public RangedFloat test3;
+    private void Start()
+    {
+
+    }
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
-            AudioLocator.GetServiceProvider().Play("test");
+        {
+            AudioLocator.GetAudioPlayer().Play("test");
+            SceneManager.LoadScene(1);
+        }
 
-        if (Input.GetMouseButtonDown(0))
-            stringref.Value += "a";
     }
 }

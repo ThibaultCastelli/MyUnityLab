@@ -1,5 +1,5 @@
 
-namespace AudioThibaultCastelli
+namespace AudioTC
 {
     // Default audio player
     public class AudioPlayer : IAudioPlayer

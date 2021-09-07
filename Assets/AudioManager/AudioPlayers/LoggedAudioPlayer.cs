@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace AudioThibaultCastelli
+namespace AudioTC
 {
     // Audio player used to log each changement of state of a ClipsData
     // (can be used with a default AudioPlayer or with a NullAudioPlayer)

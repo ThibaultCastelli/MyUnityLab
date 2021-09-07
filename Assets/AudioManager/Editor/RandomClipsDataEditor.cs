@@ -3,15 +3,15 @@ using UnityEditor;
 
 namespace AudioTC
 {
-    [CustomEditor(typeof(SimpleClipsData))]
-    public class SimpleClipsDataEditor : Editor
+    [CustomEditor(typeof(RandomClipsData))]
+    public class RandomClipsDataEditor : Editor
     {
-        SimpleClipsData _target;
+        RandomClipsData _target;
         AudioSource _previewer;
 
         private void OnEnable()
         {
-            _target = (SimpleClipsData)target;
+            _target = (RandomClipsData)target;
 
             // Create an audio source to play the preview
             _previewer = EditorUtility.CreateGameObjectWithHideFlags("Audio Preview", HideFlags.HideAndDontSave, typeof(AudioSource)).GetComponent<AudioSource>();

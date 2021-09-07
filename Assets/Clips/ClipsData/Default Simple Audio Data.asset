@@ -24,6 +24,6 @@ MonoBehaviour:
   priority: 128
   source: {fileID: 0}
   volume: 0.453
-  pan: 0.82
+  pan: 0.01
   pitch: 1.1
   reverbZonMix: 1

@@ -16,18 +16,22 @@ MonoBehaviour:
   clips:
   - {fileID: 8300000, guid: 96f0cfe80e866444b9bd2032a97f5311, type: 3}
   mixerGroup: {fileID: 0}
-  playOnAwake: 1
+  playOnAwake: 0
   loop: 0
   mute: 0
   bypassEffects: 0
   bypassReverbZones: 0
   priority: 128
   source: {fileID: 0}
-  minVolume: 1
-  maxVolume: 1
-  minPan: 0.62
-  maxPan: -0.95
-  minPitch: 0.21
-  maxPitch: 1.49
-  minReverbZonMix: 1
-  maxReverbZonMix: 1
+  volume:
+    minValue: 0
+    maxValue: 1
+  pan:
+    minValue: -1
+    maxValue: 1
+  pitch:
+    minValue: 0.7319198
+    maxValue: 2
+  reverbZoneMix:
+    minValue: 0
+    maxValue: 0
