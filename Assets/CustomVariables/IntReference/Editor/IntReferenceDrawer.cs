@@ -3,8 +3,8 @@ using UnityEditor;
 
 namespace CustomVariablesTC
 {
-    [CustomPropertyDrawer(typeof(FloatReference))]
-    public class FloatReferenceDrawer : PropertyDrawer
+    [CustomPropertyDrawer(typeof(IntReference))]
+    public class IntReferenceDrawer : PropertyDrawer
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -33,14 +33,14 @@ namespace CustomVariablesTC
 
             if (useConstant)
             {
-                float constantValue = property.FindPropertyRelative("constant").floatValue;
+                int constantValue = property.FindPropertyRelative("constant").intValue;
 
                 // Prompt the current constant value
                 string newValue = EditorGUI.TextField(fieldPos, constantValue.ToString());
 
                 // Get the value from the text field and apply it to the property
-                float.TryParse(newValue, out constantValue);
-                property.FindPropertyRelative("constant").floatValue = constantValue;
+                int.TryParse(newValue, out constantValue);
+                property.FindPropertyRelative("constant").intValue = constantValue;
             }
             else
                 EditorGUI.ObjectField(fieldPos, property.FindPropertyRelative("reference"), GUIContent.none);

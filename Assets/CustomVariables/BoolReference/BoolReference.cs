@@ -3,13 +3,13 @@ using UnityEngine;
 namespace CustomVariablesTC
 {
     [System.Serializable]
-    public class FloatReference
+    public class BoolReference
     {
         [SerializeField] bool useConstant = true;
-        [SerializeField] float constant;
-        [SerializeField] FloatVariable reference;
+        [SerializeField] bool constant;
+        [SerializeField] BoolVariable reference;
 
-        public float Value
+        public bool Value
         {
             get { return useConstant ? constant : reference.value; }
             set

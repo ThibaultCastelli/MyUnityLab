@@ -1,7 +1,10 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Default Float Variable", menuName = "Custom Variables/Float")]
-public class FloatVariable : ScriptableObject
+namespace CustomVariablesTC
 {
-    public float value;
+    [CreateAssetMenu(fileName = "Default Float Variable", menuName = "Custom Variables/Float")]
+    public class FloatVariable : ScriptableObject
+    {
+        public float value;
+    }
 }
