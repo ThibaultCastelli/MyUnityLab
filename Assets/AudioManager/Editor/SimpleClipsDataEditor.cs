@@ -8,10 +8,13 @@ namespace AudioThibaultCastelli
     [CustomEditor(typeof(SimpleClipsData))]
     public class SimpleClipsDataEditor : Editor
     {
+        SimpleClipsData _target;
         AudioSource _previewer;
 
         private void OnEnable()
         {
+            _target = (SimpleClipsData)target;
+
             // Create an audio source to play the preview
             _previewer = EditorUtility.CreateGameObjectWithHideFlags("Audio Preview", HideFlags.HideAndDontSave, typeof(AudioSource)).GetComponent<AudioSource>();
         }
@@ -25,9 +28,10 @@ namespace AudioThibaultCastelli
         {
             base.OnInspectorGUI();
 
+            // Preview Button
             EditorGUILayout.Space(20);
             if (GUILayout.Button("Preview", GUILayout.Height(50)))
-                ((SimpleClipsData)target).Preview(_previewer);
+                _target.Preview(_previewer);
         }
     }
 }
