@@ -5,7 +5,7 @@ namespace AudioTC
 {
     // Component used to give all the ClipsData that can be played
     // Also used to set the audio player given by the AudioLocator
-    public class AudioData : MonoBehaviour
+    public class AudioManager : MonoBehaviour
     {
         #region Variables
         [Header("COMPONENTS")]
@@ -23,7 +23,7 @@ namespace AudioTC
 
         // Used to keep only one instance of the class between scene
         // (prevent sounds to be cut during transitions between scenes)
-        static AudioData instance;
+        static AudioManager instance;
 
         // Used to keep track of the audio player wanted by the user so it can be changed during runtime
         bool _previousNull;

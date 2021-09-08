@@ -6,21 +6,27 @@ namespace AudioTC
     public abstract class IAudioPlayer
     {
         // Used to get access to the dictionary and list of ClipsData
-        AudioData audioData;
+        AudioManager audioData;
 
         // Constructor
-        public IAudioPlayer(AudioData audioData)
+        public IAudioPlayer(AudioManager audioData)
         {
             this.audioData = audioData;
         }
 
         #region Abstract Methods
         public abstract void Play(string name);
+        public abstract void Play(ClipsData clipData);
         public abstract void PlayDelayed(string name, float delay);
+        public abstract void PlayDelayed(ClipsData clipData, float delay);
         public abstract void PlayScheduled(string name, double time);
+        public abstract void PlayScheduled(ClipsData clipData, double time);
         public abstract void Stop(string name);
+        public abstract void Stop(ClipsData clipData);
         public abstract void Pause(string name);
+        public abstract void Pause(ClipsData clipData);
         public abstract void UnPause(string name);
+        public abstract void UnPause(ClipsData clipData);
         #endregion
 
         #region Functions
@@ -56,6 +62,18 @@ namespace AudioTC
 
             if (setAudioSource)
                 audio.SetAudioSource();
+            return true;
+        }
+        protected bool SetAudio(ClipsData clipData, bool setAudioSource = true)
+        {
+            if (!audioData.audios.ContainsKey(clipData.name))
+            {
+                Debug.LogError($"ERROR : '{clipData.name}' does not exist.");
+                return false;
+            }
+
+            if (setAudioSource)
+                clipData.SetAudioSource();
             return true;
         }
         #endregion
