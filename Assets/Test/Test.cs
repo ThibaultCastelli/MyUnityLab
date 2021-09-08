@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using StateTC;
 using AudioTC;
+using ObserverTC;
 
 public class Test : MonoBehaviour
 {
-    public ClipsData clip;
-    private void Start()
+    private void Update()
     {
-        AudioLocator.GetAudioPlayer().Play(clip);
+        
     }
+
 }
