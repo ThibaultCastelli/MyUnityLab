@@ -231,12 +231,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35d72ce250f19d348a2431ae0369fb96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playOnAwake: 0
-  mirrored: 0
-  endPos: {x: 8, y: 0, z: 0}
-  duration: 1
-  easeType: 6
-  mirorType: 4
+  valueToModify: 2
+  animationType: 2
+  easeInType: 3
+  easeOutType: 0
+  easeInOutType: 0
+  mirorType: 5
+  specialEaseType: 0
+  playOnAwake: 1
+  duration: 2
+  endPosition: {x: 0, y: 0, z: 0}
+  endRotation: {x: 0, y: 90, z: 90}
+  endScale: {x: 1, y: 2, z: 2}
+  endColor: {r: 0.8584906, g: 0.0040494935, b: 0.0040494935, a: 0.99215686}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
