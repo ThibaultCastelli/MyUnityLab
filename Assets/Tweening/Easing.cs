@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 #region Enums
 enum ValueToModify
@@ -10,6 +12,7 @@ enum ValueToModify
     Rotation,
     Scale,
     Color,
+    TextColor,
 }
 enum AnimationType
 {
@@ -78,15 +81,26 @@ public class Easing : MonoBehaviour
 
     [Header("INFOS")]
     [SerializeField] bool playOnAwake;
-    [SerializeField] [Range(0, 20)] float duration;
+    [SerializeField] [Range(0.1f, 20)] float duration = 1;
     [SerializeField] Vector3 endPosition;
+    [SerializeField] bool useLocalPosition;
     [SerializeField] Vector3 endRotation;
     [SerializeField] Vector3 endScale;
-    [SerializeField] Color endColor;
+    [SerializeField] Color endColor = Color.white;
 
     Func<IEnumerator> animationToPlay;
     Func<float, float> easeFunc;
     float elapsedTime = 0;
+
+    Vector3 _previousStartPos;
+    Vector3 _previousStartRot;
+    Vector3 _previousStartScale;
+    Color _previousStartColor;
+    Color _previousStartTextColor;
+
+    bool _isInTransition;
+    bool _hasPlayed;
+
     #endregion
 
     #region Animation Choice
@@ -105,6 +119,9 @@ public class Easing : MonoBehaviour
                 break;
             case ValueToModify.Color:
                 animationToPlay = EaseColor;
+                break;
+            case ValueToModify.TextColor:
+                animationToPlay = EaseTextColor;
                 break;
         }
 
@@ -203,30 +220,77 @@ public class Easing : MonoBehaviour
             PlayAnimation();
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-            PlayAnimation();
-    }
-
     public void PlayAnimation()
     {
-        StartCoroutine(animationToPlay?.Invoke());
+        if (!_isInTransition)
+        {
+            StartCoroutine(animationToPlay?.Invoke());
+            _hasPlayed = true;
+        }
+    }
+
+    public void PlayReverseAnimation()
+    {
+        if (animationType == AnimationType.Mirror)
+        {
+            Debug.LogError("ERROR : Can't play in reverse for a mirror animation type.");
+            return;
+        }
+        else if (!_hasPlayed)
+        {
+            PlayAnimation();
+            return;
+        }
+        /*else if (_isInTransition)
+        {
+            Debug.LogError("ERROR : You need to wait until the animation is finished to play another one.");
+            return;
+        }
+        */
+        switch (valueToModify)
+        {
+            case ValueToModify.Position:
+                endPosition = _previousStartPos;
+                break;
+            case ValueToModify.Rotation:
+                endRotation = _previousStartRot;
+                break;
+            case ValueToModify.Scale:
+                    endScale = _previousStartScale;
+                break;
+            case ValueToModify.Color:
+                    endColor = _previousStartColor;
+                break;
+            case ValueToModify.TextColor:
+                    endColor = _previousStartTextColor;
+                break;
+        }
+
+        PlayAnimation();
     }
 
     
     #region Standard Eases
     IEnumerator EasePos()
     {
+        _isInTransition = true;
         elapsedTime = 0;
-        Vector3 startPosition = transform.position;
 
+        Vector3 startPosition = useLocalPosition ? transform.localPosition : transform.position;
+        _previousStartPos = startPosition;
+        
         while (true)
         {
-            transform.position = Vector3.Lerp(startPosition, endPosition, easeFunc(elapsedTime / duration));
+            if (useLocalPosition)
+                transform.localPosition = Vector3.Lerp(startPosition, endPosition, easeFunc(elapsedTime / duration));
+            else
+                transform.position = Vector3.Lerp(startPosition, endPosition, easeFunc(elapsedTime / duration));
 
             if (elapsedTime == duration)
+            {
+                _isInTransition = false;
                 yield break;
+            }
 
             yield return null;
             elapsedTime = Mathf.Clamp(elapsedTime += Time.deltaTime, 0, duration);
@@ -234,8 +298,12 @@ public class Easing : MonoBehaviour
     }
     IEnumerator EaseRot()
     {
+        _isInTransition = true;
         elapsedTime = 0;
+
         Quaternion startRot = transform.rotation;
+        _previousStartRot = startRot.eulerAngles;
+
         Quaternion endRot = Quaternion.Euler(endRotation);
 
         while (true)
@@ -243,7 +311,10 @@ public class Easing : MonoBehaviour
             transform.rotation = Quaternion.Lerp(startRot, endRot, easeFunc(elapsedTime / duration));
 
             if (elapsedTime == duration)
+            {
+                _isInTransition = false;
                 yield break;
+            }
 
             yield return null;
             elapsedTime = Mathf.Clamp(elapsedTime += Time.deltaTime, 0, duration);
@@ -251,15 +322,21 @@ public class Easing : MonoBehaviour
     }
     IEnumerator EaseScale()
     {
+        _isInTransition = true;
         elapsedTime = 0;
+
         Vector3 startScale = transform.localScale;
+        _previousStartScale = startScale;
 
         while (true)
         {
             transform.localScale = Vector3.Lerp(startScale, endScale, easeFunc(elapsedTime / duration));
 
             if (elapsedTime == duration)
+            {
+                _isInTransition = false;
                 yield break;
+            }
 
             yield return null;
             elapsedTime = Mathf.Clamp(elapsedTime += Time.deltaTime, 0, duration);
@@ -267,23 +344,85 @@ public class Easing : MonoBehaviour
     }
     IEnumerator EaseColor()
     {
+        _isInTransition = true;
         elapsedTime = 0;
 
-        Renderer renderer;
+        Renderer renderer = null;
+        Image image = null;
+        Color startColor;
+
         if (!TryGetComponent<Renderer>(out renderer))
         {
-            Debug.LogError("ERROR : Can't find the renderer on this gameobject.");
-            yield break;
-        }
+            if (!TryGetComponent<Image>(out image))
+            {
+                Debug.LogError("ERROR : Can't find the renderer or the image on this gameobject.");
 
-        Color startColor = renderer.material.color;
+                _isInTransition = false;
+                yield break;
+            }
+            else
+                startColor = image.color;
+        }
+        else
+            startColor = renderer.material.color;
+
+        _previousStartColor = startColor;
 
         while (true)
         {
-            renderer.material.color = Color.Lerp(startColor, endColor, easeFunc(elapsedTime / duration));
+            if (renderer != null)
+                renderer.material.color = Color.Lerp(startColor, endColor, easeFunc(elapsedTime / duration));
+            else
+                image.color = Color.Lerp(startColor, endColor, easeFunc(elapsedTime / duration));
 
             if (elapsedTime == duration)
+            {
+                _isInTransition = false;
                 yield break;
+            }
+
+            yield return null;
+            elapsedTime = Mathf.Clamp(elapsedTime += Time.deltaTime, 0, duration);
+        }
+    }
+    IEnumerator EaseTextColor()
+    {
+        _isInTransition = true;
+        elapsedTime = 0;
+
+        Text text = null;
+        TextMeshProUGUI TMP = null;
+        Color startColor;
+
+        if (!TryGetComponent<TextMeshProUGUI>(out TMP))
+        {
+            if (!TryGetComponent<Text>(out text))
+            {
+                Debug.LogError("ERROR : Can't find the TextMeshPro or the Text on this gameobject.");
+
+                _isInTransition = false;
+                yield break;
+            }
+            else
+                startColor = text.color;
+        }
+        else
+            startColor = TMP.color;
+
+        _previousStartTextColor = startColor;
+
+        while (true)
+        {
+            if (TMP != null)
+                TMP.color = Color.Lerp(startColor, endColor, easeFunc(elapsedTime / duration));
+            else
+                text.color = Color.Lerp(startColor, endColor, easeFunc(elapsedTime / duration));
+
+            if (elapsedTime == duration)
+            {
+                _isInTransition = false;
+                yield break;
+            }
 
             yield return null;
             elapsedTime = Mathf.Clamp(elapsedTime += Time.deltaTime, 0, duration);
