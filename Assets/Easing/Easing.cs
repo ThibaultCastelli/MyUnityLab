@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -82,14 +81,17 @@ public class Easing : MonoBehaviour
     [SerializeField] bool playOnAwake;
     [SerializeField] bool loop;
     [SerializeField] [Range(0.1f, 20)] float duration = 1;
-    [SerializeField] Vector3 endPosition;
     [SerializeField] bool useLocalPosition;
+    [SerializeField] Vector3 endPosition;
     [SerializeField] Vector3 endRotation;
     [SerializeField] Vector3 endScale;
     [SerializeField] Color endColor = Color.white;
 
+    // Delegates to store the animation to play and the ease type to use
     Func<IEnumerator> animationToPlay;
     Func<float, float> easeFunc;
+
+    // Use to know how much time is passed since the begining of the animation
     float elapsedTime = 0;
 
     // Starting Points
@@ -111,19 +113,28 @@ public class Easing : MonoBehaviour
     Vector3 newEndScale;
     Color newEndColor;
 
+    // Color
     new Renderer renderer = null;
     Image image = null;
 
+    // Text Color
     Text text = null;
     TextMeshProUGUI TMP = null;
 
+    // Flags
     bool _isInTransition;
     bool _hasPlayed;
+
+    // Special eases
+    const float s = 1.70158f;
+    float t;
     #endregion
 
     #region Animation Choice
     private void Awake()
     {
+        // Select the animation to play based on the value the user want to modify
+        // Also initialize defaults variables
         switch (valueToModify)
         {
             case ValueToModify.Position:
@@ -180,6 +191,7 @@ public class Easing : MonoBehaviour
                 break;
         }
 
+        // Select which ease function will be used
         switch (animationType)
         {
             case AnimationType.EaseIn:
@@ -249,12 +261,18 @@ public class Easing : MonoBehaviour
                                 animationToPlay = EaseInBackPos;
                                 break;
                             case ValueToModify.Rotation:
+                                animationToPlay = EaseInBackRot;
                                 break;
                             case ValueToModify.Scale:
+                                animationToPlay = EaseInBackScale;
                                 break;
                             case ValueToModify.Color:
+                                Debug.LogError("ERROR : Can't change the color with specials ease.");
+                                animationToPlay = NullAnimation;
                                 break;
                             case ValueToModify.TextColor:
+                                Debug.LogError("ERROR : Can't change the text color with specials ease.");
+                                animationToPlay = NullAnimation;
                                 break;
                         }
                         break;
@@ -266,12 +284,18 @@ public class Easing : MonoBehaviour
                                 animationToPlay = EaseOutBackPos;
                                 break;
                             case ValueToModify.Rotation:
+                                animationToPlay = EaseOutBackRot;
                                 break;
                             case ValueToModify.Scale:
+                                animationToPlay = EaseOutBackScale;
                                 break;
                             case ValueToModify.Color:
+                                Debug.LogError("ERROR : Can't change the color with specials ease.");
+                                animationToPlay = NullAnimation;
                                 break;
                             case ValueToModify.TextColor:
+                                Debug.LogError("ERROR : Can't change the text color with specials ease.");
+                                animationToPlay = NullAnimation;
                                 break;
                         }
                         break;
@@ -280,14 +304,21 @@ public class Easing : MonoBehaviour
                         switch (valueToModify)
                         {
                             case ValueToModify.Position:
+                                animationToPlay = EaseOutBouncePos;
                                 break;
                             case ValueToModify.Rotation:
+                                animationToPlay = EaseOutBounceRot;
                                 break;
                             case ValueToModify.Scale:
+                                animationToPlay = EaseOutBounceScale;
                                 break;
                             case ValueToModify.Color:
+                                Debug.LogError("ERROR : Can't change the color with specials ease.");
+                                animationToPlay = NullAnimation;
                                 break;
                             case ValueToModify.TextColor:
+                                Debug.LogError("ERROR : Can't change the text color with specials ease.");
+                                animationToPlay = NullAnimation;
                                 break;
                         }
                         break;
@@ -324,20 +355,26 @@ public class Easing : MonoBehaviour
     #region Start & Update
     private void Start()
     {
+        // Play the animation as soon as the game start if playOnAwake is selected on the editor
         if (playOnAwake)
             PlayAnimation();
     }
 
     private void Update()
     {
+        // Replay automatically the animation if loop is selected on the editor
         if (loop && !_isInTransition && _hasPlayed)
             PlayAnimationInOut();
     }
     #endregion
 
     #region Functions
+    // Reset the variables and play the animation selected on the Awake
     public void PlayAnimation()
     {
+        _isInTransition = true;
+        elapsedTime = 0;
+
         StartCoroutine(animationToPlay?.Invoke());
         _hasPlayed = true;
     }
@@ -392,14 +429,9 @@ public class Easing : MonoBehaviour
     }
     #endregion
 
-
     #region Standard Eases
     IEnumerator EasePos()
-    {
-        Debug.Log("easepos");
-        _isInTransition = true;
-        elapsedTime = 0;
-        
+    {   
         while (true)
         {
             if (useLocalPosition)
@@ -419,9 +451,6 @@ public class Easing : MonoBehaviour
     }
     IEnumerator EaseRot()
     {
-        _isInTransition = true;
-        elapsedTime = 0;
-
         Quaternion startRot = Quaternion.Euler(newStartRot);
         Quaternion endRot = Quaternion.Euler(newEndRot);
 
@@ -441,9 +470,6 @@ public class Easing : MonoBehaviour
     }
     IEnumerator EaseScale()
     {
-        _isInTransition = true;
-        elapsedTime = 0;
-
         while (true)
         {
             transform.localScale = Vector3.Lerp(newStartScale, newEndScale, easeFunc(elapsedTime / duration));
@@ -460,9 +486,6 @@ public class Easing : MonoBehaviour
     }
     IEnumerator EaseColor()
     {
-        _isInTransition = true;
-        elapsedTime = 0;
-
         while (true)
         {
             if (renderer != null)
@@ -482,9 +505,6 @@ public class Easing : MonoBehaviour
     }
     IEnumerator EaseTextColor()
     {
-        _isInTransition = true;
-        elapsedTime = 0;
-
         while (true)
         {
             if (TMP != null)
@@ -504,17 +524,9 @@ public class Easing : MonoBehaviour
     }
     #endregion
 
-    #region Specials Eases
-
-    #region Back
+    #region Back In
     IEnumerator EaseInBackPos()
     {
-        _isInTransition = true;
-        elapsedTime = 0;
-
-        float s = 1.70158f;
-        float t;
-
         Vector3 endPos = newEndPos - newStartPos;
 
         while (true)
@@ -536,14 +548,51 @@ public class Easing : MonoBehaviour
             elapsedTime = Mathf.Clamp(elapsedTime += Time.deltaTime, 0, duration);
         }
     }
+    IEnumerator EaseInBackRot()
+    {
+        Vector3 endRot = newEndRot - newStartRot;
+
+        while (true)
+        {
+            t = elapsedTime / duration;
+
+            transform.rotation = Quaternion.Euler(endRot * t * t * ((s + 1) * t - s) + newStartRot);
+
+            if (elapsedTime == duration)
+            {
+                _isInTransition = false;
+                yield break;
+            }
+
+            yield return null;
+            elapsedTime = Mathf.Clamp(elapsedTime += Time.deltaTime, 0, duration);
+        }
+    }
+    IEnumerator EaseInBackScale()
+    {
+        Vector3 endScale = newEndScale - newStartScale;
+
+        while (true)
+        {
+            t = elapsedTime / duration;
+
+            transform.localScale = endScale * t * t * ((s + 1) * t - s) + newStartScale;
+
+            if (elapsedTime == duration)
+            {
+                _isInTransition = false;
+                yield break;
+            }
+
+            yield return null;
+            elapsedTime = Mathf.Clamp(elapsedTime += Time.deltaTime, 0, duration);
+        }
+    }
+    #endregion
+
+    #region Back Out
     IEnumerator EaseOutBackPos()
     {
-        _isInTransition = true;
-        elapsedTime = 0;
-
-        float s = 1.70158f;
-        float t;
-
         Vector3 endPos = newEndPos - newStartPos;
 
         while (true)
@@ -565,43 +614,41 @@ public class Easing : MonoBehaviour
             elapsedTime = Mathf.Clamp(elapsedTime += Time.deltaTime, 0, duration);
         }
     }
-    
-    #endregion
-
-    #region Bounce
-    IEnumerator EaseOutBounceVector3()
+    IEnumerator EaseOutBackRot()
     {
-        elapsedTime = 0;
-        Vector3 startPos = transform.position;
-        endPosition -= startPos;
-
-        float t;
+        Vector3 endRot = newEndRot - newStartRot;
 
         while (true)
         {
-            t = elapsedTime / duration;
-            if (t < (1 / 2.75f))
-            {
-                transform.position = endPosition * (7.5625f * t * t) + startPos;
-            }
-            else if (t < (2 / 2.75f))
-            {
-                t -= (1.5f / 2.75f);
-                transform.position = endPosition * (7.5625f * (t) * t + .75f) + startPos;
-            }
-            else if (t < (2.5 / 2.75))
-            {
-                t -= (2.25f / 2.75f);
-                transform.position = endPosition * (7.5625f * (t) * t + .9375f) + startPos;
-            }
-            else
-            {
-                t -= (2.625f / 2.75f);
-                transform.position = endPosition * (7.5625f * (t) * t + .984375f) + startPos;
-            }
+            t = elapsedTime / duration - 1;
+
+            transform.rotation = Quaternion.Euler(endRot * (t * t * ((s + 1) * t + s) + 1) + newStartRot);
 
             if (elapsedTime == duration)
+            {
+                _isInTransition = false;
                 yield break;
+            }
+
+            yield return null;
+            elapsedTime = Mathf.Clamp(elapsedTime += Time.deltaTime, 0, duration);
+        }
+    }
+    IEnumerator EaseOutBackScale()
+    {
+        Vector3 endScale = newEndScale - newStartScale;
+
+        while (true)
+        {
+            t = elapsedTime / duration - 1;
+
+            transform.localScale = endScale * (t * t * ((s + 1) * t + s) + 1) + newStartScale;
+
+            if (elapsedTime == duration)
+            {
+                _isInTransition = false;
+                yield break;
+            }
 
             yield return null;
             elapsedTime = Mathf.Clamp(elapsedTime += Time.deltaTime, 0, duration);
@@ -609,9 +656,139 @@ public class Easing : MonoBehaviour
     }
     #endregion
 
-    #region Elastic
+    #region Bounce
+    IEnumerator EaseOutBouncePos()
+    {
+        Vector3 endPos = newEndPos - newStartPos;
 
-    #endregion
+        while (true)
+        {
+            t = elapsedTime / duration;
+            if (t < (1 / 2.75f))
+            {
+                if (useLocalPosition)
+                    transform.localPosition = endPos * (7.5625f * t * t) + newStartPos;
+                else
+                    transform.position = endPos * (7.5625f * t * t) + newStartPos;
+            }
+            else if (t < (2 / 2.75f))
+            {
+                t -= (1.5f / 2.75f);
+
+                if (useLocalPosition)
+                    transform.localPosition = endPos * (7.5625f * (t) * t + .75f) + newStartPos;
+                else
+                    transform.position = endPos * (7.5625f * (t) * t + .75f) + newStartPos;
+            }
+            else if (t < (2.5 / 2.75))
+            {
+                t -= (2.25f / 2.75f);
+
+                if (useLocalPosition)
+                    transform.localPosition = endPos * (7.5625f * (t) * t + .9375f) + newStartPos;
+                else
+                    transform.position = endPos * (7.5625f * (t) * t + .9375f) + newStartPos;
+            }
+            else
+            {
+                t -= (2.625f / 2.75f);
+
+                if (useLocalPosition)
+                    transform.localPosition = endPos * (7.5625f * (t) * t + .984375f) + newStartPos;
+                else
+                    transform.position = endPos * (7.5625f * (t) * t + .984375f) + newStartPos;
+            }
+
+            if (elapsedTime == duration)
+            {
+                _isInTransition = false;
+                yield break;
+            }
+
+            yield return null;
+            elapsedTime = Mathf.Clamp(elapsedTime += Time.deltaTime, 0, duration);
+        }
+    }
+    IEnumerator EaseOutBounceRot()
+    {
+        Vector3 endRot = newEndRot - newStartRot;
+
+        while (true)
+        {
+            t = elapsedTime / duration;
+
+            if (t < (1 / 2.75f))
+                transform.rotation = Quaternion.Euler(endRot * (7.5625f * t * t) + newStartRot);
+
+            else if (t < (2 / 2.75f))
+            {
+                t -= (1.5f / 2.75f);
+
+                transform.rotation = Quaternion.Euler(endRot * (7.5625f * (t) * t + .75f) + newStartRot);
+            }
+            else if (t < (2.5 / 2.75))
+            {
+                t -= (2.25f / 2.75f);
+
+                transform.rotation = Quaternion.Euler(endRot * (7.5625f * (t) * t + .9375f) + newStartRot);
+            }
+            else
+            {
+                t -= (2.625f / 2.75f);
+
+                transform.rotation = Quaternion.Euler(endRot * (7.5625f * (t) * t + .984375f) + newStartRot);
+            }
+
+            if (elapsedTime == duration)
+            {
+                _isInTransition = false;
+                yield break;
+            }
+
+            yield return null;
+            elapsedTime = Mathf.Clamp(elapsedTime += Time.deltaTime, 0, duration);
+        }
+    }
+    IEnumerator EaseOutBounceScale()
+    {
+        Vector3 endScale = newEndScale - newStartScale;
+
+        while (true)
+        {
+            t = elapsedTime / duration;
+
+            if (t < (1 / 2.75f))
+                transform.localScale = endScale * (7.5625f * t * t) + newStartScale;
+
+            else if (t < (2 / 2.75f))
+            {
+                t -= (1.5f / 2.75f);
+
+                transform.localScale = endScale * (7.5625f * (t) * t + .75f) + newStartScale;
+            }
+            else if (t < (2.5 / 2.75))
+            {
+                t -= (2.25f / 2.75f);
+
+                transform.localScale = endScale * (7.5625f * (t) * t + .9375f) + newStartScale;
+            }
+            else
+            {
+                t -= (2.625f / 2.75f);
+
+                transform.localScale = endScale * (7.5625f * (t) * t + .984375f) + newStartScale;
+            }
+
+            if (elapsedTime == duration)
+            {
+                _isInTransition = false;
+                yield break;
+            }
+
+            yield return null;
+            elapsedTime = Mathf.Clamp(elapsedTime += Time.deltaTime, 0, duration);
+        }
+    }
     #endregion
 
     #region Easing Types
@@ -644,4 +821,6 @@ public class Easing : MonoBehaviour
     float MirrorQuint(float t) => t < 0.5f ? EaseInQuint(t / 0.5f) : EaseInQuint((1 - t) / 0.5f);
     float MirrorCirc(float t) => t < 0.5f ? EaseInCirc(t / 0.5f) : EaseInCirc((1 - t) / 0.5f);
     #endregion
+
+    IEnumerator NullAnimation() { yield break; }
 }
