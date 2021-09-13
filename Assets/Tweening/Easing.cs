@@ -52,7 +52,6 @@ enum SpecialEase
 {
     EaseInBack,
     EaseOutBack,
-    EaseInOutBack,
     EaseOutBounce,
 }
 enum MirorType
@@ -81,6 +80,7 @@ public class Easing : MonoBehaviour
 
     [Header("INFOS")]
     [SerializeField] bool playOnAwake;
+    [SerializeField] bool loop;
     [SerializeField] [Range(0.1f, 20)] float duration = 1;
     [SerializeField] Vector3 endPosition;
     [SerializeField] bool useLocalPosition;
@@ -92,15 +92,33 @@ public class Easing : MonoBehaviour
     Func<float, float> easeFunc;
     float elapsedTime = 0;
 
-    Vector3 _previousStartPos;
-    Vector3 _previousStartRot;
-    Vector3 _previousStartScale;
-    Color _previousStartColor;
-    Color _previousStartTextColor;
+    // Starting Points
+    Vector3 defaultStartPos;
+    Vector3 newStartPos;
+
+    Vector3 defaultStartRot;
+    Vector3 newStartRot;
+
+    Vector3 defaultStartScale;
+    Vector3 newStartScale;
+
+    Color defaultStartColor;
+    Color newStartColor;
+
+    // Ending Points
+    Vector3 newEndPos;
+    Vector3 newEndRot;
+    Vector3 newEndScale;
+    Color newEndColor;
+
+    new Renderer renderer = null;
+    Image image = null;
+
+    Text text = null;
+    TextMeshProUGUI TMP = null;
 
     bool _isInTransition;
     bool _hasPlayed;
-
     #endregion
 
     #region Animation Choice
@@ -110,18 +128,55 @@ public class Easing : MonoBehaviour
         {
             case ValueToModify.Position:
                 animationToPlay = EasePos;
+                defaultStartPos = useLocalPosition ? transform.localPosition : transform.position;
+                newStartPos = defaultStartPos;
+                newEndPos = endPosition;
                 break;
+
             case ValueToModify.Rotation:
                 animationToPlay = EaseRot;
+                defaultStartRot = transform.rotation.eulerAngles;
+                newStartRot = defaultStartRot;
+                newEndRot = endRotation;
                 break;
+
             case ValueToModify.Scale:
                 animationToPlay = EaseScale;
+                defaultStartScale = transform.localScale;
+                newStartScale = defaultStartScale;
+                newEndScale = endScale;
                 break;
+
             case ValueToModify.Color:
                 animationToPlay = EaseColor;
+                if (!TryGetComponent<Renderer>(out renderer))
+                {
+                    if (!TryGetComponent<Image>(out image))
+                        Debug.LogError("ERROR : Can't find the renderer or the image on this gameobject.");
+                    else
+                        defaultStartColor = image.color;
+                }
+                else
+                    defaultStartColor = renderer.material.color;
+
+                newStartColor = defaultStartColor;
+                newEndColor = endColor;
                 break;
+
             case ValueToModify.TextColor:
                 animationToPlay = EaseTextColor;
+                if (!TryGetComponent<TextMeshProUGUI>(out TMP))
+                {
+                    if (!TryGetComponent<Text>(out text))
+                        Debug.LogError("ERROR : Can't find the TextMeshPro or the Text on this gameobject.");
+                    else
+                        defaultStartColor = text.color;
+                }
+                else
+                    defaultStartColor = TMP.color;
+
+                newStartColor = defaultStartColor;
+                newEndColor = endColor;
                 break;
         }
 
@@ -185,6 +240,58 @@ public class Easing : MonoBehaviour
                 break;
 
             case AnimationType.SpecialEase:
+                switch (specialEaseType)
+                {
+                    case SpecialEase.EaseInBack:
+                        switch (valueToModify)
+                        {
+                            case ValueToModify.Position:
+                                animationToPlay = EaseInBackPos;
+                                break;
+                            case ValueToModify.Rotation:
+                                break;
+                            case ValueToModify.Scale:
+                                break;
+                            case ValueToModify.Color:
+                                break;
+                            case ValueToModify.TextColor:
+                                break;
+                        }
+                        break;
+
+                    case SpecialEase.EaseOutBack:
+                        switch (valueToModify)
+                        {
+                            case ValueToModify.Position:
+                                animationToPlay = EaseOutBackPos;
+                                break;
+                            case ValueToModify.Rotation:
+                                break;
+                            case ValueToModify.Scale:
+                                break;
+                            case ValueToModify.Color:
+                                break;
+                            case ValueToModify.TextColor:
+                                break;
+                        }
+                        break;
+
+                    case SpecialEase.EaseOutBounce:
+                        switch (valueToModify)
+                        {
+                            case ValueToModify.Position:
+                                break;
+                            case ValueToModify.Rotation:
+                                break;
+                            case ValueToModify.Scale:
+                                break;
+                            case ValueToModify.Color:
+                                break;
+                            case ValueToModify.TextColor:
+                                break;
+                        }
+                        break;
+                }
                 break;
 
             case AnimationType.Mirror:
@@ -214,22 +321,31 @@ public class Easing : MonoBehaviour
     }
     #endregion
 
+    #region Start & Update
     private void Start()
     {
         if (playOnAwake)
             PlayAnimation();
     }
 
+    private void Update()
+    {
+        if (loop && !_isInTransition && _hasPlayed)
+            PlayAnimationInOut();
+    }
+    #endregion
+
+    #region Functions
     public void PlayAnimation()
     {
-        if (!_isInTransition)
-        {
-            StartCoroutine(animationToPlay?.Invoke());
-            _hasPlayed = true;
-        }
+        StartCoroutine(animationToPlay?.Invoke());
+        _hasPlayed = true;
     }
 
-    public void PlayReverseAnimation()
+    // On first call, will play the animation with input values
+    // On the second call, will play the animation in reverse
+    // etc etc...
+    public void PlayAnimationInOut()
     {
         if (animationType == AnimationType.Mirror)
         {
@@ -241,50 +357,55 @@ public class Easing : MonoBehaviour
             PlayAnimation();
             return;
         }
-        /*else if (_isInTransition)
+        else if (_isInTransition)
         {
-            Debug.LogError("ERROR : You need to wait until the animation is finished to play another one.");
-            return;
+            StopAllCoroutines();
         }
-        */
+        
         switch (valueToModify)
         {
             case ValueToModify.Position:
-                endPosition = _previousStartPos;
+                newEndPos = newEndPos == endPosition ? defaultStartPos : endPosition;
+                newStartPos = useLocalPosition ? transform.localPosition : transform.position;
                 break;
+
             case ValueToModify.Rotation:
-                endRotation = _previousStartRot;
+                newEndRot = newEndRot == endRotation ? defaultStartRot : endRotation;
+                newStartRot = transform.rotation.eulerAngles;
                 break;
+
             case ValueToModify.Scale:
-                    endScale = _previousStartScale;
+                newEndScale = newEndScale == endScale ? defaultStartScale : endScale;
+                newStartScale = transform.localScale;
                 break;
             case ValueToModify.Color:
-                    endColor = _previousStartColor;
+                newEndColor = newEndColor == endColor ? defaultStartColor : endColor;
+                newStartColor = renderer != null ? renderer.material.color : image.color;
                 break;
             case ValueToModify.TextColor:
-                    endColor = _previousStartTextColor;
+                newEndColor = newEndColor == endColor ? defaultStartColor : endColor;
+                newStartColor = TMP != null ? TMP.color : text.color;
                 break;
         }
-
+        
         PlayAnimation();
     }
+    #endregion
 
-    
+
     #region Standard Eases
     IEnumerator EasePos()
     {
+        Debug.Log("easepos");
         _isInTransition = true;
         elapsedTime = 0;
-
-        Vector3 startPosition = useLocalPosition ? transform.localPosition : transform.position;
-        _previousStartPos = startPosition;
         
         while (true)
         {
             if (useLocalPosition)
-                transform.localPosition = Vector3.Lerp(startPosition, endPosition, easeFunc(elapsedTime / duration));
+                transform.localPosition = Vector3.Lerp(newStartPos, newEndPos, easeFunc(elapsedTime / duration));
             else
-                transform.position = Vector3.Lerp(startPosition, endPosition, easeFunc(elapsedTime / duration));
+                transform.position = Vector3.Lerp(newStartPos, newEndPos, easeFunc(elapsedTime / duration));
 
             if (elapsedTime == duration)
             {
@@ -301,10 +422,8 @@ public class Easing : MonoBehaviour
         _isInTransition = true;
         elapsedTime = 0;
 
-        Quaternion startRot = transform.rotation;
-        _previousStartRot = startRot.eulerAngles;
-
-        Quaternion endRot = Quaternion.Euler(endRotation);
+        Quaternion startRot = Quaternion.Euler(newStartRot);
+        Quaternion endRot = Quaternion.Euler(newEndRot);
 
         while (true)
         {
@@ -325,12 +444,9 @@ public class Easing : MonoBehaviour
         _isInTransition = true;
         elapsedTime = 0;
 
-        Vector3 startScale = transform.localScale;
-        _previousStartScale = startScale;
-
         while (true)
         {
-            transform.localScale = Vector3.Lerp(startScale, endScale, easeFunc(elapsedTime / duration));
+            transform.localScale = Vector3.Lerp(newStartScale, newEndScale, easeFunc(elapsedTime / duration));
 
             if (elapsedTime == duration)
             {
@@ -347,33 +463,12 @@ public class Easing : MonoBehaviour
         _isInTransition = true;
         elapsedTime = 0;
 
-        Renderer renderer = null;
-        Image image = null;
-        Color startColor;
-
-        if (!TryGetComponent<Renderer>(out renderer))
-        {
-            if (!TryGetComponent<Image>(out image))
-            {
-                Debug.LogError("ERROR : Can't find the renderer or the image on this gameobject.");
-
-                _isInTransition = false;
-                yield break;
-            }
-            else
-                startColor = image.color;
-        }
-        else
-            startColor = renderer.material.color;
-
-        _previousStartColor = startColor;
-
         while (true)
         {
             if (renderer != null)
-                renderer.material.color = Color.Lerp(startColor, endColor, easeFunc(elapsedTime / duration));
+                renderer.material.color = Color.Lerp(newStartColor, newEndColor, easeFunc(elapsedTime / duration));
             else
-                image.color = Color.Lerp(startColor, endColor, easeFunc(elapsedTime / duration));
+                image.color = Color.Lerp(newStartColor, newEndColor, easeFunc(elapsedTime / duration));
 
             if (elapsedTime == duration)
             {
@@ -390,33 +485,12 @@ public class Easing : MonoBehaviour
         _isInTransition = true;
         elapsedTime = 0;
 
-        Text text = null;
-        TextMeshProUGUI TMP = null;
-        Color startColor;
-
-        if (!TryGetComponent<TextMeshProUGUI>(out TMP))
-        {
-            if (!TryGetComponent<Text>(out text))
-            {
-                Debug.LogError("ERROR : Can't find the TextMeshPro or the Text on this gameobject.");
-
-                _isInTransition = false;
-                yield break;
-            }
-            else
-                startColor = text.color;
-        }
-        else
-            startColor = TMP.color;
-
-        _previousStartTextColor = startColor;
-
         while (true)
         {
             if (TMP != null)
-                TMP.color = Color.Lerp(startColor, endColor, easeFunc(elapsedTime / duration));
+                TMP.color = Color.Lerp(newStartColor, newEndColor, easeFunc(elapsedTime / duration));
             else
-                text.color = Color.Lerp(startColor, endColor, easeFunc(elapsedTime / duration));
+                text.color = Color.Lerp(newStartColor, newEndColor, easeFunc(elapsedTime / duration));
 
             if (elapsedTime == duration)
             {
@@ -433,82 +507,65 @@ public class Easing : MonoBehaviour
     #region Specials Eases
 
     #region Back
-    IEnumerator EaseInBackVector3()
+    IEnumerator EaseInBackPos()
     {
+        _isInTransition = true;
         elapsedTime = 0;
-        Vector3 startPos = transform.position;
-        endPosition -= startPos;
 
         float s = 1.70158f;
         float t;
+
+        Vector3 endPos = newEndPos - newStartPos;
 
         while (true)
         {
             t = elapsedTime / duration;
-            transform.position = endPosition * t * t * ((s + 1) * t - s) + startPos;
+
+            if (useLocalPosition)
+                transform.localPosition = endPos * t * t * ((s + 1) * t - s) + newStartPos;
+            else
+                transform.position = endPos * t * t * ((s + 1) * t - s) + newStartPos;
             
             if (elapsedTime == duration)
+            {
+                _isInTransition = false;
                 yield break;
+            }
 
             yield return null;
             elapsedTime = Mathf.Clamp(elapsedTime += Time.deltaTime, 0, duration);
         }
     }
-    IEnumerator EaseOutBackVector3()
+    IEnumerator EaseOutBackPos()
     {
+        _isInTransition = true;
         elapsedTime = 0;
-        Vector3 startPos = transform.position;
-        endPosition -= startPos;
 
         float s = 1.70158f;
         float t;
+
+        Vector3 endPos = newEndPos - newStartPos;
 
         while (true)
         {
             t = elapsedTime / duration - 1;
-            transform.position = endPosition * (t * t * ((s + 1) * t + s) + 1) + startPos;
 
-            if (elapsedTime == duration)
-                yield break;
-
-            yield return null;
-            elapsedTime = Mathf.Clamp(elapsedTime += Time.deltaTime, 0, duration);
-        }
-    }
-    // NOT WORKING
-    IEnumerator EaseInOutBackVector3()
-    {
-        elapsedTime = 0;
-        Vector3 startPos = transform.position;
-        endPosition -= startPos;
-
-        float s = 1.70158f;
-        float t;
-
-        while (true)
-        {
-            t = elapsedTime;
-            t /= duration / 2;
-            Debug.Log(t);
-            if ((t) < 1)
-            {
-                s *= (1.525f);
-                transform.position = endPosition * 0.5f * (t * t * (((s) + 1) * t - s)) + startPos;
-            }
+            if (useLocalPosition)
+                transform.localPosition = endPos * (t * t * ((s + 1) * t + s) + 1) + newStartPos;
             else
-            {
-                t -= 2;
-                s *= (1.525f);
-                transform.position = endPosition * 0.5f * ((t) * t * (((s) + 1) * t + s) + 2) + startPos;
-            }
+                transform.position = endPos * (t * t * ((s + 1) * t + s) + 1) + newStartPos;
 
             if (elapsedTime == duration)
+            {
+                _isInTransition = false;
                 yield break;
+            }
 
             yield return null;
             elapsedTime = Mathf.Clamp(elapsedTime += Time.deltaTime, 0, duration);
         }
     }
+    
     #endregion
 
     #region Bounce

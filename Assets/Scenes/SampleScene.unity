@@ -293,8 +293,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 160, y: 30}
+  m_AnchoredPosition: {x: 139.83423, y: -109.64282}
+  m_SizeDelta: {x: 439.6686, y: 249.2856}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &187062074
 MonoBehaviour:
@@ -315,7 +315,8 @@ MonoBehaviour:
   easeInOutType: 0
   mirorType: 0
   specialEaseType: 0
-  playOnAwake: 1
+  playOnAwake: 0
+  loop: 0
   duration: 1
   endPosition: {x: 0, y: 0, z: 0}
   useLocalPosition: 0
@@ -344,15 +345,15 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 14
+    m_FontSize: 100
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
-    m_MaxSize: 40
+    m_MinSize: 1
+    m_MaxSize: 100
     m_Alignment: 0
     m_AlignByGeometry: 0
     m_RichText: 1
-    m_HorizontalOverflow: 0
+    m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: New Text
@@ -919,7 +920,7 @@ GameObject:
   - component: {fileID: 2146000292}
   - component: {fileID: 2146000291}
   - component: {fileID: 2146000290}
-  - component: {fileID: 2146000288}
+  - component: {fileID: 2146000289}
   - component: {fileID: 2146000287}
   m_Layer: 5
   m_Name: Button
@@ -957,43 +958,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 2146000285}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Script: {fileID: 11500000, guid: 35d72ce250f19d348a2431ae0369fb96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 2146000288}
-          m_TargetAssemblyTypeName: Easing, Assembly-CSharp
-          m_MethodName: PlayReverseAnimation
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 1
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 2146000288}
-          m_TargetAssemblyTypeName: Easing, Assembly-CSharp
-          m_MethodName: PlayReverseAnimation
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
---- !u!114 &2146000288
+  valueToModify: 0
+  animationType: 3
+  easeInType: 0
+  easeOutType: 0
+  easeInOutType: 0
+  mirorType: 0
+  specialEaseType: 1
+  playOnAwake: 1
+  loop: 0
+  duration: 1
+  endPosition: {x: 0, y: 0, z: 0}
+  useLocalPosition: 1
+  endRotation: {x: 0, y: 0, z: 0}
+  endScale: {x: 0, y: 0, z: 0}
+  endColor: {r: 1, g: 1, b: 1, a: 1}
+--- !u!114 &2146000289
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1002,23 +985,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2146000285}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 35d72ce250f19d348a2431ae0369fb96, type: 3}
+  m_Script: {fileID: 11500000, guid: 07d12678d61b9014aab03f2d6c65f914, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  valueToModify: 2
-  animationType: 2
-  easeInType: 5
-  easeOutType: 0
-  easeInOutType: 0
-  mirorType: 0
-  specialEaseType: 0
-  playOnAwake: 0
-  duration: 2
-  endPosition: {x: 0, y: 0, z: 0}
-  useLocalPosition: 1
-  endRotation: {x: 0, y: 0, z: 90}
-  endScale: {x: 2, y: 2, z: 0}
-  endColor: {r: 0.05098039, g: 1, b: 0.8403509, a: 1}
+  test: {fileID: 2146000287}
 --- !u!114 &2146000290
 MonoBehaviour:
   m_ObjectHideFlags: 0
