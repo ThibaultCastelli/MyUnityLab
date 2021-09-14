@@ -7,7 +7,7 @@ using ObserverTC;
 
 public class Test : MonoBehaviour
 {
-    public Easing test;
+    public EasingPosition test;
 
     private void Start()
     {

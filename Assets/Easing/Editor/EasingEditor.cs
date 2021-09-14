@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(Easing))]
+[CustomEditor(typeof(EasingPosition))]
 public class EasingEditor : Editor
 {
     public override void OnInspectorGUI()

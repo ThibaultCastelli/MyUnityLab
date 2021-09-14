@@ -207,8 +207,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 60
+  m_fontSizeBase: 60
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -269,14 +269,13 @@ GameObject:
   - component: {fileID: 187062076}
   - component: {fileID: 187062075}
   - component: {fileID: 187062074}
-  - component: {fileID: 187062077}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &187062073
 RectTransform:
   m_ObjectHideFlags: 0
@@ -303,26 +302,21 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 187062072}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 35d72ce250f19d348a2431ae0369fb96, type: 3}
+  m_Script: {fileID: 11500000, guid: 39a833af236911f479794e9542c8b3da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  valueToModify: 0
-  animationType: 3
+  animationType: 0
   easeInType: 0
   easeOutType: 0
   easeInOutType: 0
   mirorType: 0
-  specialEaseType: 2
+  specialEaseType: 0
   playOnAwake: 1
   loop: 0
-  duration: 2
-  useLocalPosition: 1
-  endPosition: {x: 0, y: 0, z: 0}
-  endRotation: {x: 0, y: 0, z: 0}
-  endScale: {x: 0, y: 0, z: 0}
-  endColor: {r: 1, g: 0.042452812, b: 0.042452812, a: 1}
+  duration: 1
+  endColor: {r: 0.8773585, g: 0.1448469, b: 0.1448469, a: 1}
 --- !u!114 &187062075
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -365,19 +359,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 187062072}
   m_CullTransparentMesh: 1
---- !u!114 &187062077
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 187062072}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07d12678d61b9014aab03f2d6c65f914, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  test: {fileID: 187062074}
 --- !u!1 &234703517
 GameObject:
   m_ObjectHideFlags: 0
@@ -920,9 +901,11 @@ GameObject:
   - component: {fileID: 2146000292}
   - component: {fileID: 2146000291}
   - component: {fileID: 2146000290}
-  - component: {fileID: 2146000289}
-  - component: {fileID: 2146000287}
   - component: {fileID: 2146000288}
+  - component: {fileID: 2146000287}
+  - component: {fileID: 2146000289}
+  - component: {fileID: 2146000293}
+  - component: {fileID: 2146000294}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -947,37 +930,10 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 130, y: 63}
-  m_SizeDelta: {x: 160, y: 30}
+  m_AnchoredPosition: {x: 234.8757, y: 12.1511}
+  m_SizeDelta: {x: 369.7516, y: 131.6977}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2146000287
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2146000285}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 35d72ce250f19d348a2431ae0369fb96, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  valueToModify: 2
-  animationType: 3
-  easeInType: 0
-  easeOutType: 0
-  easeInOutType: 0
-  mirorType: 0
-  specialEaseType: 2
-  playOnAwake: 0
-  loop: 0
-  duration: 0.3
-  useLocalPosition: 1
-  endPosition: {x: 0, y: 0, z: 0}
-  endRotation: {x: 0, y: 0, z: 90}
-  endScale: {x: 2, y: 2, z: 2}
-  endColor: {r: 1, g: 0, b: 0, a: 1}
---- !u!114 &2146000288
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -990,12 +946,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Delegates:
-  - eventID: 0
+  - eventID: 4
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 2146000287}
-          m_TargetAssemblyTypeName: Easing, Assembly-CSharp
+        - m_Target: {fileID: 2146000289}
+          m_TargetAssemblyTypeName: EasingRotation, Assembly-CSharp
           m_MethodName: PlayAnimationInOut
           m_Mode: 1
           m_Arguments:
@@ -1006,22 +962,29 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - eventID: 1
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 2146000287}
-          m_TargetAssemblyTypeName: Easing, Assembly-CSharp
-          m_MethodName: PlayAnimationInOut
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
+--- !u!114 &2146000288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2146000285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35d72ce250f19d348a2431ae0369fb96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animationType: 3
+  easeInType: 0
+  easeOutType: 0
+  easeInOutType: 0
+  mirorType: 0
+  specialEaseType: 2
+  playOnAwake: 0
+  loop: 0
+  duration: 1
+  useLocalPosition: 1
+  endPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &2146000289
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1031,10 +994,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 2146000285}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07d12678d61b9014aab03f2d6c65f914, type: 3}
+  m_Script: {fileID: 11500000, guid: 6ad248547c2b69f47b2ff306ebd74cda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  test: {fileID: 2146000287}
+  animationType: 2
+  easeInType: 0
+  easeOutType: 0
+  easeInOutType: 0
+  mirorType: 1
+  specialEaseType: 0
+  playOnAwake: 1
+  loop: 0
+  duration: 0.5
+  endRotation: {x: 0, y: 0, z: 90}
 --- !u!114 &2146000290
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1117,3 +1089,47 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2146000285}
   m_CullTransparentMesh: 1
+--- !u!114 &2146000293
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2146000285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56b3d5e32d9d2a747b0d7a73fb89f37f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animationType: 3
+  easeInType: 0
+  easeOutType: 0
+  easeInOutType: 0
+  mirorType: 0
+  specialEaseType: 1
+  playOnAwake: 0
+  loop: 0
+  duration: 0.3
+  endScale: {x: 2, y: 2, z: 2}
+--- !u!114 &2146000294
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2146000285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ace5897083feda4ebdeef4f77ae6a43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animationType: 2
+  easeInType: 0
+  easeOutType: 0
+  easeInOutType: 4
+  mirorType: 0
+  specialEaseType: 0
+  playOnAwake: 1
+  loop: 0
+  duration: 0.5
+  endColor: {r: 1, g: 0, b: 0, a: 1}
