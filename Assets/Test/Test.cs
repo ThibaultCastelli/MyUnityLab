@@ -4,6 +4,7 @@ using UnityEngine;
 using StateTC;
 using AudioTC;
 using ObserverTC;
+using EasingTC;
 
 public class Test : MonoBehaviour
 {
