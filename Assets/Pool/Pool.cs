@@ -17,13 +17,13 @@ namespace PoolTC
         [Space]
 
         [Header("POOL INFOS")]
-        [SerializeField] [Range(1, 1000)] int defaultPoolSize = 1;
-        [SerializeField] [Range(1, 1000)] int maxPoolSize = 10;
         [Tooltip("If set to false : The pool can be resize dynamically if you request a game object while they are all in use in the " +
             "pool.\nIf set to true : The pool will not be resize dynamically, so if all game objects are in use in the pool and you " +
             "request a new one, nothing will happen.")]
         [SerializeField] bool fixedSize;
-
+        [SerializeField] [Range(1, 1000)] int defaultPoolSize = 1;
+        [SerializeField] [Range(1, 1000)] int maxPoolSize = 10;
+        
         List<GameObject> pool;
         #endregion
 
@@ -45,10 +45,7 @@ namespace PoolTC
             for (int i = 0; i < pool.Count; i++)
             {
                 if (!pool[i].activeInHierarchy)
-                {
-                    pool[i].SetActive(true);
                     return pool[i];
-                }
             }
 
             if (fixedSize)

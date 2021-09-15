@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using StateTC;
-using AudioTC;
+using SFXTC;
 using ObserverTC;
 using EasingTC;
 using PoolTC;
@@ -20,6 +20,7 @@ public class Test : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             GameObject prefab = pool.Request();
+            prefab.SetActive(true);
             prefab.transform.position = new Vector3(Random.Range(-2, 2), Random.Range(-2, 2), Random.Range(-2, 2));
         }
     }
