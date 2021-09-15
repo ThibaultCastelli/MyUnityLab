@@ -5,10 +5,11 @@ using StateTC;
 using AudioTC;
 using ObserverTC;
 using EasingTC;
+using PoolTC;
 
 public class Test : MonoBehaviour
 {
-    public EasingPosition test;
+    public Pool pool;
 
     private void Start()
     {
@@ -17,7 +18,10 @@ public class Test : MonoBehaviour
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
-            test.PlayAnimationInOut();
+        {
+            GameObject prefab = pool.Request();
+            prefab.transform.position = new Vector3(Random.Range(-2, 2), Random.Range(-2, 2), Random.Range(-2, 2));
+        }
     }
 
 }
