@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 916940730402333585}
   - component: {fileID: 916940730402333586}
+  - component: {fileID: 9258782571542039}
   m_Layer: 0
   m_Name: SFX_Manager
   m_TagString: Untagged
@@ -44,5 +45,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SFXEvents: []
-  useNullAudioPlayer: 0
-  useLoggedAudioPlayer: 0
+  useNullSFXPlayer: 0
+  useLoggedSFXPlayer: 0
+--- !u!114 &9258782571542039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 916940730402333587}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3fa05f2e02498d43bed90dfbf739f6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultPoolSize: 10

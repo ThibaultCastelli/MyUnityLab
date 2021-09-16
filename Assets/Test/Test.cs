@@ -14,6 +14,9 @@ public class Test : MonoBehaviour
     public MusicEvent musicEventB;
     public MusicEvent musicEventC;
 
+    public SFXEvent SFXEventA;
+    public SFXEvent SFXEventB;
+
     private void Start()
     {
         
@@ -21,13 +24,22 @@ public class Test : MonoBehaviour
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.A))
-            musicEventA.PlayFade();
+            musicEventA.Play();
 
-        if (Input.GetKeyDown(KeyCode.B))
-            musicEventB.PlayFade();
+        if (Input.GetKeyDown(KeyCode.Z))
+            musicEventB.Play();
 
-        if (Input.GetKeyDown(KeyCode.C))
-            musicEventC.PlayFade();
+        if (Input.GetKeyDown(KeyCode.E))
+            musicEventC.Play();
+
+        if (Input.GetKeyDown(KeyCode.Q))
+            musicEventA.Play(5);
+
+        if (Input.GetKeyDown(KeyCode.S))
+            musicEventB.Play(5);
+
+        if (Input.GetKeyDown(KeyCode.D))
+            musicEventC.Play(5);
 
         if (Input.GetKeyDown(KeyCode.UpArrow))
             MusicManager.Instance.IncreaseLayer();
@@ -35,8 +47,29 @@ public class Test : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.DownArrow))
             MusicManager.Instance.DecreaseLayer();
 
-        if (Input.GetKeyDown(KeyCode.Space))
-            MusicManager.Instance.StopFade();
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+            MusicManager.Instance.IncreaseLayer(5);
+
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+            MusicManager.Instance.DecreaseLayer(5);
+
+        if (Input.GetKeyDown(KeyCode.W))
+            MusicManager.Instance.Stop();
+
+        if (Input.GetKeyDown(KeyCode.X))
+            MusicManager.Instance.Stop(5);
+
+        if (Input.GetKeyDown(KeyCode.O))
+            SFXEventA.Play();
+
+        if (Input.GetKeyDown(KeyCode.P))
+            SFXEventB.Play();
+
+        if (Input.GetKeyDown(KeyCode.L))
+            SFXEventA.Stop();
+
+        if (Input.GetKeyDown(KeyCode.M))
+            SFXEventB.Stop();
     }
 
 }

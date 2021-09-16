@@ -8,36 +8,40 @@ namespace SFXTC
     public class SFXEvent : ScriptableObject
     {
         #region Variables
-        [TextArea] public string description;
+        [TextArea] [SerializeField] string description;
 
         [Header("COMPONENTS")]
         [Tooltip("List of clips to be played.\n Only one will be randomly selected when playing.")]
-        public List<AudioClip> clips;
+        [SerializeField] List<AudioClip> clips;
 
         [Tooltip("Mixer's group that will be assign to the clip.")]
-        public AudioMixerGroup mixerGroup;
+        [SerializeField] AudioMixerGroup mixerGroup;
         [Space]
 
         [Header("INFOS")]
         [Tooltip("Select if the clip should be playing automatically on start.")]
-        public bool playOnAwake;
+        [SerializeField] bool playOnAwake;
 
         [Tooltip("Select if the clip should automatically replay.")]
-        public bool loop;
+        [SerializeField] bool loop;
 
         [Tooltip("Select if the clip should be mute.")]
-        public bool mute;
+        [SerializeField] bool mute;
 
         [Tooltip("Select if the clip should ignore the effects applied to his audio source.")]
-        public bool bypassEffects;
+        [SerializeField] bool bypassEffects;
 
         [Tooltip("Select if the clip should ignore the reverb zones")]
-        public bool bypassReverbZones;
+        [SerializeField] bool bypassReverbZones;
+
+        [Tooltip("Select if this sfx can be play in multiple audio source at the same time.")]
+        [SerializeField] bool multiplePlay = true;
+        public bool MultiplePlay => multiplePlay;
         [Space]
 
         [Header("SPECS")]
         [Tooltip("Select the priority of a clip.\nA clip with a low value will have priority on a clip with a high value.\n0 = Highest priority | 256 = Lowest priority")]
-        [Range(0, 256)] public int priority = 128;
+        [Range(0, 256)] [SerializeField] int priority = 128;
 
         [HideInInspector] public bool useRandomVolume;
         [HideInInspector] public float volume = 1f;
@@ -63,9 +67,16 @@ namespace SFXTC
         #endregion
 
         #region Functions
-        // Initialize the audio source when playing (cf Audio Players)
-        public virtual void SetAudioSource()
+        public void Play() { SFXManager.Instance.Play(this); }
+        public void PlayDelayed(float delay) { SFXManager.Instance.PlayDelayed(this, delay); }
+        public void PlayScheduled(double time) { SFXManager.Instance.PlayScheduled(this, time); }
+        public void Stop() { SFXManager.Instance.Stop(this); }
+        public void Pause() { SFXManager.Instance.Pause(this); }
+        public void UnPause() { SFXManager.Instance.UnPause(this); }
+
+        public void SetAudioSource()
         {
+            // Initialize the audio source values
             if (source == null)
             {
                 Debug.LogError($"ERROR : There is no source for '{name}'.");
@@ -110,7 +121,7 @@ namespace SFXTC
         }
 
         // Used only to preview on the inspector
-        public virtual void Preview(AudioSource source)
+        public void Preview(AudioSource source)
         {
             if (clips.Count == 0)
             {
@@ -151,14 +162,6 @@ namespace SFXTC
 
             source.Play();
         }
-
-        // Fonctions to use with event system or to use if you have the reference of the object
-        public void Play() { SFXLocator.GetSFXPlayer().Play(name); }
-        public void PlayDelayed(float delay) { SFXLocator.GetSFXPlayer().PlayDelayed(name, delay); }
-        public void PlayScheduled(double time) { SFXLocator.GetSFXPlayer().PlayScheduled(name, time); }
-        public void Stop() { SFXLocator.GetSFXPlayer().Stop(name); }
-        public void Pause() { SFXLocator.GetSFXPlayer().Pause(name); }
-        public void UnPause() { SFXLocator.GetSFXPlayer().UnPause(name); }
         #endregion
     }
 }

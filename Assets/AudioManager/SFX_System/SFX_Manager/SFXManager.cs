@@ -3,101 +3,164 @@ using UnityEngine;
 
 namespace SFXTC
 {
-    // Component used to give all the SFXEvents that can be played
-    // Also used to set the SFX player given by the SFXLocator
+    [RequireComponent(typeof(AudioSourcesPool))]
     public class SFXManager : MonoBehaviour
     {
         #region Variables
-        [Header("COMPONENTS")]
-        public List<SFXEvent> SFXEvents = new List<SFXEvent>();
-        [Space]
-
         [Header("BEHAVIOUR")]
-        [Tooltip("Check if you want to disable all audios")]
-        [SerializeField] bool useNullAudioPlayer;
-        [Tooltip("Check if you want to log any change of state of audios")]
-        [SerializeField] bool useLoggedAudioPlayer;
+        [Tooltip("Check if you want to disable all SFXs")]
+        [SerializeField] bool useNullSFXPlayer;
+        [Tooltip("Check if you want to log any change of state of SFXs")]
+        [SerializeField] bool useLoggedSFXPlayer;
 
-        // Use a Dictionary to acess SFXEvents at constant time
-        public Dictionary<string, SFXEvent> SFXs = new Dictionary<string, SFXEvent>();
-
-        // Used to keep only one instance of the class between scene
-        // (prevent sounds to be cut during transitions between scenes)
-        static SFXManager instance;
-
-        // Used to keep track of the SFX player wanted by the user so it can be changed during runtime
-        bool _previousNull;
-        bool _previousLog;
+        AudioSourcesPool audioSourcesPool;
         #endregion
 
-        #region Starts & Updates
+        #region Initialization
+        // Singleton Lazy Initailization
+        static SFXManager _instance;
+        public static SFXManager Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    // Search if the GameObject already exist
+                    _instance = FindObjectOfType<SFXManager>();
+
+                    if (_instance == null)
+                    {
+                        // Create the GameObject with a SFXManager and AudioSourcesPool component
+                        GameObject musicManager = new GameObject("SFX_Manager");
+                        musicManager.AddComponent<AudioSourcesPool>();
+                        _instance = musicManager.AddComponent<SFXManager>();
+
+                        // Prevent the MusicManager to be destroy when changing scene
+                        DontDestroyOnLoad(musicManager);
+                    }
+                }
+                return _instance;
+            }
+        }
+
         private void Awake()
         {
             // Prevent from having more than one SFXManager in the scene
-            if (instance != null)
+            if (_instance != null)
             {
                 Destroy(this.gameObject);
                 return;
             }
 
-            instance = this;
+            // Prevent the MusicManager to be destroy when changing scene
+            _instance = this;
             DontDestroyOnLoad(this.gameObject);
 
-            // Provide the service locator
-            SetProvider();
-
-            // Initialize the Dictionary
-            foreach (SFXEvent SFX in SFXEvents)
-            {
-                // Prevents from having the same SFXEvents twice
-                if (SFXs.ContainsKey(SFX.name))
-                    continue;
-
-                // Create an audio source for each SFXEvent
-                SFX.source = gameObject.AddComponent<AudioSource>();
-                SFXs.Add(SFX.name, SFX);
-
-                // Play the audio if it needs to be played on awake
-                if (SFX.playOnAwake)
-                    SFXLocator.GetSFXPlayer().Play(SFX.name);
-            }
-
-            // Initialize flags
-            _previousNull = useNullAudioPlayer;
-            _previousLog = useLoggedAudioPlayer;
-        }
-
-        private void Update()
-        {
-            // Change the SFX player at runtime
-            if (_previousNull != useNullAudioPlayer)
-                SetProvider();
-            if (_previousLog != useLoggedAudioPlayer)
-                SetProvider();
-
-            // Update flags
-            _previousNull = useNullAudioPlayer;
-            _previousLog = useLoggedAudioPlayer;
+            audioSourcesPool = GetComponent<AudioSourcesPool>();
         }
         #endregion
 
         #region Functions
-        // Set the service provider for the audio locator
-        void SetProvider()
+        public void Play(SFXEvent SFX)
         {
-            if (useLoggedAudioPlayer)
+            // Check if the SFX can be play at different audio source
+            if (SFX.source != null && SFX.source.isPlaying && !SFX.MultiplePlay)
             {
-                if (useNullAudioPlayer)
-                    SFXLocator.SetSFXPlayer(new LoggedSFXPlayer(this, new NullSFXPlayer(this)));
-                else
-                    SFXLocator.SetSFXPlayer(new LoggedSFXPlayer(this, new SFXPlayer(this)));
+                Debug.LogError("ERROR : This SFX can't be played in two different audio source at the same time.");
+                return;
             }
-            else if (useNullAudioPlayer)
+
+            // Use different behaviour based on the type of player selected
+            if (useLoggedSFXPlayer)
+                Debug.Log($"Play {SFX.name}.");
+            if (useNullSFXPlayer)
+                return;
+
+            // Set the audio source of the SFX and play it
+            SFX.source = audioSourcesPool.Request();
+            SFX.SetAudioSource();
+            SFX.source.Play();
+        }
+
+        public void PlayDelayed(SFXEvent SFX, float delay)
+        {
+            // Check if the SFX can be play at different audio source
+            if (SFX.source != null && SFX.source.isPlaying && !SFX.MultiplePlay)
             {
-                SFXLocator.SetSFXPlayer(new NullSFXPlayer(this));
+                Debug.LogError("ERROR : This SFX can't be played in two different audio source at the same time.");
+                return;
             }
-            else
-                SFXLocator.SetSFXPlayer(new SFXPlayer(this));
+
+            // Use different behaviour based on the type of player selected
+            if (useLoggedSFXPlayer)
+                Debug.Log($"Play {SFX.name} with a delay of {delay}s.");
+            if (useNullSFXPlayer)
+                return;
+
+            // Set the audio source of the SFX and play it with a delay
+            SFX.source = audioSourcesPool.Request();
+            SFX.SetAudioSource();
+            SFX.source.PlayDelayed(delay);
+        }
+
+        public void PlayScheduled(SFXEvent SFX, double time)
+        {
+            // Check if the SFX can be play at different audio source
+            if (SFX.source != null && SFX.source.isPlaying && !SFX.MultiplePlay)
+            {
+                Debug.LogError("ERROR : This SFX can't be played in two different audio source at the same time.");
+                return;
+            }
+
+            // Use different behaviour based on the type of player selected
+            if (useLoggedSFXPlayer)
+                Debug.Log($"Play {SFX.name} scheduled at {time}s.");
+            if (useNullSFXPlayer)
+                return;
+
+            // Set the audio source of the SFX and play it at scheduled time
+            SFX.source = audioSourcesPool.Request();
+            SFX.SetAudioSource();
+            SFX.source.PlayScheduled(time);
+        }
+
+        public void Stop(SFXEvent SFX)
+        {
+            // Use different behaviour based on the type of player selected
+            if (useLoggedSFXPlayer)
+                Debug.Log($"Stop {SFX.name}.");
+            if (useNullSFXPlayer)
+                return;
+
+            // Check if the SFX has an audio source and stop it
+            if (SFX.source != null)
+                SFX.source.Stop();
+        }
+
+        public void Pause(SFXEvent SFX)
+        {
+            // Use different behaviour based on the type of player selected
+            if (useLoggedSFXPlayer)
+                Debug.Log($"Pause {SFX.name}.");
+            if (useNullSFXPlayer)
+                return;
+
+            // Check if the SFX has an audio source and pause it
+            if (SFX.source != null)
+                SFX.source.Pause();
+        }
+
+        public void UnPause(SFXEvent SFX)
+        {
+            // Use different behaviour based on the type of player selected
+            if (useLoggedSFXPlayer)
+                Debug.Log($"Unpause {SFX.name}.");
+            if (useNullSFXPlayer)
+                return;
+
+            // Check if the SFX has an audio source and unpause it
+            if (SFX.source != null)
+                SFX.source.UnPause();
         }
         #endregion
     }

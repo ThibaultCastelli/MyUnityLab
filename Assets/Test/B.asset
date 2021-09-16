@@ -10,11 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a3679d3c3f2ba8e408e2ffe8ebd87384, type: 3}
-  m_Name: Default Music Event
+  m_Name: B
   m_EditorClassIdentifier: 
-  musicLayers: []
+  musicLayers:
+  - {fileID: 8300000, guid: ce2c800a2ed21d24387bfb4c2eb0f55f, type: 3}
+  - {fileID: 8300000, guid: e950ab7917e10874ab496a89b23c960e, type: 3}
+  - {fileID: 8300000, guid: e15868475c7b0484c8d924e4a310483c, type: 3}
   mixerGroup: {fileID: 0}
-  layerType: 0
-  fadeInTime: 0
-  fadeOutTime: 0
-  fadeLayerTime: 0
+  layerType: 1
+  loop: 1
+  defaultVolume: 0.776

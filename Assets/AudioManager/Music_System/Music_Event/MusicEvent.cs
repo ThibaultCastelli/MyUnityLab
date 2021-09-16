@@ -1,50 +1,49 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 
 namespace MusicTC
 {
+    #region Enum
     public enum LayerType
     {
         Additive,
         Single
     }
+    #endregion
 
     [CreateAssetMenu(fileName = "Default Music Event", menuName = "Audio/Music Event")]
     public class MusicEvent : ScriptableObject
     {
-        // Get audio layers
-        public AudioClip[] musicLayers;
+        #region Variables
+        [Header("COMPONENTS")]
+        [Tooltip("A list of audio clips that represent different layers of a music.")]
+        [SerializeField] AudioClip[] musicLayers;
+        [Tooltip("Mixer's group that will be assign to each music layer.")]
+        [SerializeField] AudioMixerGroup mixerGroup;
+        [Space]
 
-        // Get audio mixer
-        public AudioMixerGroup mixerGroup;
+        [Header("MUSIC INFOS")]
+        [Tooltip("The type of layer blend: \nAdditive : All the layer can be play at the same time.\nSingle : Only one layer can be play at the same time.")]
+        [SerializeField] LayerType layerType = LayerType.Additive;
+        [Tooltip("Select if the layers should automatically replay.")]
+        [SerializeField] bool loop = true;
+        [Tooltip("Select the default volume for each layer.\n0 = mute | 1 = full sound")]
+        [SerializeField] [Range(0, 1)] float defaultVolume = 1;
+        #endregion
 
-        // Get LayerType (additive or single)
-        public LayerType layerType = LayerType.Additive;
+        #region Properties
+        public AudioClip[] MusicLayers => musicLayers;
+        public AudioMixerGroup MixerGroup => mixerGroup;
+        public LayerType LayerType => layerType;
+        public bool Loop => loop;
+        public float DefaultVolume => defaultVolume;
+        #endregion
 
-        [Range(0, 10)] public int startLayer;
-
-        // Get fade out / in / layer time
-        [Range(0.1f, 20f)] public float fadeInTime;
-        [Range(0.1f, 20f)] public float fadeOutTime;
-        [Range(0.1f, 20f)] public float fadeLayerTime;
-
-        // AudioSource infos
-        public bool playOnAwake;
-        public bool loop;
-        public float defaultVolume;
-
-        // METHODS CALL ON MUSICMANAGER
-        // PlayImmediately method
-
-        // PlayFade method
-        public void PlayFade()
+        #region Functions
+        public void Play(float fadeTime = 0)
         {
-
+            MusicManager.Instance.Play(this, fadeTime);
         }
-        // StopImmediately method
-
-        // StopFade method
+        #endregion
     }
 }
