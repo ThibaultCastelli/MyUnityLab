@@ -6,10 +6,13 @@ using SFXTC;
 using ObserverTC;
 using EasingTC;
 using PoolTC;
+using MusicTC;
 
 public class Test : MonoBehaviour
 {
-    public Pool pool;
+    public MusicEvent musicEventA;
+    public MusicEvent musicEventB;
+    public MusicEvent musicEventC;
 
     private void Start()
     {
@@ -17,12 +20,23 @@ public class Test : MonoBehaviour
     }
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.A))
+            musicEventA.PlayFade();
+
+        if (Input.GetKeyDown(KeyCode.B))
+            musicEventB.PlayFade();
+
+        if (Input.GetKeyDown(KeyCode.C))
+            musicEventC.PlayFade();
+
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+            MusicManager.Instance.IncreaseLayer();
+
+        if (Input.GetKeyDown(KeyCode.DownArrow))
+            MusicManager.Instance.DecreaseLayer();
+
         if (Input.GetKeyDown(KeyCode.Space))
-        {
-            GameObject prefab = pool.Request();
-            prefab.SetActive(true);
-            prefab.transform.position = new Vector3(Random.Range(-2, 2), Random.Range(-2, 2), Random.Range(-2, 2));
-        }
+            MusicManager.Instance.StopFade();
     }
 
 }
