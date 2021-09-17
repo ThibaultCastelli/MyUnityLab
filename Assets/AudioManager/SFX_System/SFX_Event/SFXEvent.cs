@@ -119,10 +119,13 @@ namespace SFXTC
             else
                 source.reverbZoneMix = reverbZoneMix;
         }
+        #endregion
 
-        // Used only to preview on the inspector
+        #region Preview Functions
         public void Preview(AudioSource source)
         {
+            // Used only to preview on the inspector
+
             if (clips.Count == 0)
             {
                 Debug.LogError($"ERROR : There is no audio clip for '{name}'.");
@@ -161,6 +164,11 @@ namespace SFXTC
                 source.reverbZoneMix = reverbZoneMix;
 
             source.Play();
+        }
+
+        public void StopPreview(AudioSource previewer)
+        {
+            previewer.Stop();
         }
         #endregion
     }

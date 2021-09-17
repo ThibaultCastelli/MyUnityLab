@@ -19,7 +19,6 @@ public class Test : MonoBehaviour
 
     private void Start()
     {
-        
     }
     private void Update()
     {
@@ -42,22 +41,22 @@ public class Test : MonoBehaviour
             musicEventC.Play(5);
 
         if (Input.GetKeyDown(KeyCode.UpArrow))
-            MusicManager.Instance.IncreaseLayer();
+            MusicManager.Instance.IncreaseLayer(musicEventB);
 
         if (Input.GetKeyDown(KeyCode.DownArrow))
-            MusicManager.Instance.DecreaseLayer();
+            MusicManager.Instance.DecreaseLayer(musicEventB);
 
         if (Input.GetKeyDown(KeyCode.RightArrow))
-            MusicManager.Instance.IncreaseLayer(5);
+            MusicManager.Instance.IncreaseLayer(musicEventB, 5);
 
         if (Input.GetKeyDown(KeyCode.LeftArrow))
-            MusicManager.Instance.DecreaseLayer(5);
+            MusicManager.Instance.DecreaseLayer(musicEventB, 5);
 
         if (Input.GetKeyDown(KeyCode.W))
-            MusicManager.Instance.Stop();
+            musicEventB.Stop();
 
         if (Input.GetKeyDown(KeyCode.X))
-            MusicManager.Instance.Stop(5);
+            musicEventB.Stop(5);
 
         if (Input.GetKeyDown(KeyCode.O))
             SFXEventA.Play();

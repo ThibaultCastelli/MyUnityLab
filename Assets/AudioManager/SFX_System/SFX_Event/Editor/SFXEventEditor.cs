@@ -74,8 +74,14 @@ namespace SFXTC
 
             // Preview Button
             EditorGUILayout.Space(20);
+
+            GUILayout.BeginHorizontal();
             if (GUILayout.Button("Preview", GUILayout.Height(50)))
                 _target.Preview(_previewer);
+
+            if (GUILayout.Button("Stop", GUILayout.Height(50)))
+                _target.StopPreview(_previewer);
+            GUILayout.EndHorizontal();
         }
     }
 }

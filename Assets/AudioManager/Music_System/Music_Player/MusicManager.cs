@@ -112,7 +112,7 @@ namespace MusicTC
 
             // Stop the current MusicPlayer if it is playing
             if (ActivePlayer.musicEvent != null)
-                Stop(fadeTime);
+                Stop(ActivePlayer.musicEvent, fadeTime);
 
             // Reset the layer
             _currentLayer = 0;
@@ -122,7 +122,37 @@ namespace MusicTC
             ActivePlayer.Play(musicEvent, fadeTime);
         }
 
-        public void Stop(float fadeTime = 0)
+        public void Replay(MusicEvent musicEvent, float fadeTime = 0)
+        {
+            // Prevent errors
+            if (musicEvent == null)
+            {
+                Debug.LogError("ERROR : The MusicEvent you try to replay is null.");
+                return;
+            }
+            else if (musicEvent != ActivePlayer.musicEvent)
+            {
+                Debug.LogError("ERROR : The music event you try to replay is not the same that is currently playing.");
+                return;
+            }
+            else if (fadeTime < 0)
+            {
+                Debug.LogError("ERROR : The fade time can't be negative.");
+                return;
+            }
+
+            // Use different behaviour based on the type of player selected
+            if (useLoggedMusicPlayer)
+                Debug.Log($"Replay {musicEvent.name} with a fade time of {fadeTime}s.");
+            if (useNullMusicPlayer)
+                return;
+
+            // Stop the music event and replay it from the begining while keeping the same current layer
+            Stop(ActivePlayer.musicEvent, fadeTime);
+            ActivePlayer.Play(musicEvent, fadeTime);
+        }
+
+        public void Stop(MusicEvent musicEvent, float fadeTime = 0)
         {
             // Prevent errors
             if (ActivePlayer.musicEvent == null)
@@ -133,6 +163,11 @@ namespace MusicTC
             else if (fadeTime < 0)
             {
                 Debug.LogError("ERROR : The fade time can't be negative.");
+                return;
+            }
+            else if (musicEvent != ActivePlayer.musicEvent)
+            {
+                Debug.LogError("ERROR : This music event is not playing.");
                 return;
             }
 
@@ -147,30 +182,39 @@ namespace MusicTC
             _isPlayingA = !_isPlayingA;
         }
 
-        public void IncreaseLayer(float fadeTime = 0)
+        public void SetLayer(MusicEvent musicEvent, int newLayer, float fadeTime = 0)
         {
+            // Prevent from changing the layer of the wrong music event
+            if (musicEvent != _currentMusicEvent)
+            {
+                Debug.Log("ERROR : This music event needs to be playing in order to change its layer.");
+                return;
+            }
+            if (fadeTime < 0)
+            {
+                Debug.LogError("ERROR : The fade time can't be negative.");
+                return;
+            }
+
             // Use different behaviour based on the type of player selected
             if (useLoggedMusicPlayer)
-                Debug.Log($"Increase the layer of {_currentMusicEvent.name} with a fade time of {fadeTime}s.");
+                Debug.Log($"Set the layer of {_currentMusicEvent.name} at {newLayer}, with a fade time of {fadeTime}s.");
             if (useNullMusicPlayer)
                 return;
 
             // Increase the layer and apply it to the active MusicPlayer (result depends on the LayerType of the current MusicEvent)
-            _currentLayer = Mathf.Clamp(++_currentLayer, 0, maxLayerCount - 1);
+            _currentLayer = Mathf.Clamp(newLayer, 0, maxLayerCount - 1);
             ActivePlayer.Play(_currentMusicEvent, fadeTime);
         }
 
-        public void DecreaseLayer(float fadeTime = 0)
+        public void IncreaseLayer(MusicEvent musicEvent, float fadeTime = 0)
         {
-            // Use different behaviour based on the type of player selected
-            if (useLoggedMusicPlayer)
-                Debug.Log($"Decrease the layer of {_currentMusicEvent.name} with a fade time of {fadeTime}s.");
-            if (useNullMusicPlayer)
-                return;
+            SetLayer(musicEvent, _currentLayer + 1, fadeTime);
+        }
 
-            // Decrease the layer and apply it to the active MusicPlayer (result depends on the LayerType of the current MusicEvent)
-            _currentLayer = Mathf.Clamp(--_currentLayer, 0, maxLayerCount - 1);
-            ActivePlayer.Play(_currentMusicEvent, fadeTime);
+        public void DecreaseLayer(MusicEvent musicEvent, float fadeTime = 0)
+        {
+            SetLayer(musicEvent, _currentLayer - 1, fadeTime);
         }
         #endregion
     }
