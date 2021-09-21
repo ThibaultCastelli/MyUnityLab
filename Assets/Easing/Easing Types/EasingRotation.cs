@@ -6,7 +6,10 @@ namespace EasingTC
     public class EasingRotation : EasingBase
     {
         #region Variables
-        public Vector3 endRotation;
+        public bool addRotation;
+
+        public Vector3 endRot;
+        public Vector3 addRot;
 
         Vector3 defaultStartRot;
         Vector3 newStartRot;
@@ -23,7 +26,10 @@ namespace EasingTC
             animationToPlay = EaseRot;
             defaultStartRot = transform.rotation.eulerAngles;
             newStartRot = defaultStartRot;
-            newEndRot = endRotation;
+            if (addRotation)
+                newEndRot = defaultStartRot + addRot;
+            else
+                newEndRot = endRot;
 
             // Select which special ease function will be used
             if (animationType == AnimationType.SpecialEase)
@@ -49,7 +55,10 @@ namespace EasingTC
         #region Functions
         public override void PlayAnimationInOut()
         {
-            newEndRot = newEndRot == endRotation ? defaultStartRot : endRotation;
+            if (addRotation)
+                newEndRot = newEndRot == defaultStartRot + addRot ? defaultStartRot : defaultStartRot + addRot;
+            else
+                newEndRot = newEndRot == endRot ? defaultStartRot : endRot;
             newStartRot = transform.rotation.eulerAngles;
 
             base.PlayAnimationInOut();

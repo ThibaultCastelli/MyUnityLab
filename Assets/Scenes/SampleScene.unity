@@ -423,7 +423,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &705507993
 GameObject:
@@ -612,7 +612,7 @@ RectTransform:
   - {fileID: 2146000286}
   - {fileID: 187062073}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -781,14 +781,14 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2146000285}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 61713686}
   m_Father: {fileID: 881843601}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 234.8757, y: 12.1511}
@@ -836,16 +836,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animationType: 3
-  easeInType: 0
+  easeInType: 1
   easeOutType: 0
   easeInOutType: 0
   mirorType: 0
   specialEaseType: 2
-  playOnAwake: 0
+  playOnAwake: 1
   loop: 0
   duration: 1
   useLocalPosition: 1
-  endPosition: {x: 0, y: 0, z: 0}
+  addPosition: 0
+  endPos: {x: 0, y: 0, z: 0}
+  addPos: {x: 100, y: 0, z: 0}
 --- !u!114 &2146000289
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -864,10 +866,12 @@ MonoBehaviour:
   easeInOutType: 0
   mirorType: 1
   specialEaseType: 0
-  playOnAwake: 1
+  playOnAwake: 0
   loop: 0
   duration: 0.5
-  endRotation: {x: 0, y: 0, z: 90}
+  addRotation: 0
+  endRot: {x: 0, y: 0, z: 180}
+  addRot: {x: 0, y: 0, z: 90}
 --- !u!114 &2146000290
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -968,10 +972,12 @@ MonoBehaviour:
   easeInOutType: 0
   mirorType: 0
   specialEaseType: 1
-  playOnAwake: 0
+  playOnAwake: 1
   loop: 0
   duration: 0.3
+  addScale: 0
   endScale: {x: 2, y: 2, z: 2}
+  addScl: {x: -2, y: 1, z: 1}
 --- !u!114 &2146000294
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1003,7 +1009,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 916940730402333585, guid: c0c21fc057e94af45a9b00c6d28059fb, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 916940730402333585, guid: c0c21fc057e94af45a9b00c6d28059fb, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1064,7 +1070,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5613057858453920363, guid: 6db4fa061ab1afa4eb4a8ef0f831dced, type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5613057858453920363, guid: 6db4fa061ab1afa4eb4a8ef0f831dced, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1125,7 +1131,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7548813479228692140, guid: 8e01ad4c3f2662845a19b9a9ff5efa3d, type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7548813479228692140, guid: 8e01ad4c3f2662845a19b9a9ff5efa3d, type: 3}
       propertyPath: m_LocalPosition.x

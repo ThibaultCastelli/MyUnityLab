@@ -7,7 +7,10 @@ namespace EasingTC
     {
         #region Variables
         public bool useLocalPosition;
-        public Vector3 endPosition;
+        public bool addPosition;
+
+        public Vector3 endPos;
+        public Vector3 addPos;
 
         Vector3 defaultStartPos;
         Vector3 newStartPos;
@@ -24,7 +27,10 @@ namespace EasingTC
             animationToPlay = EasePos;
             defaultStartPos = useLocalPosition ? transform.localPosition : transform.position;
             newStartPos = defaultStartPos;
-            newEndPos = endPosition;
+            if (addPosition)
+                newEndPos = defaultStartPos + addPos;
+            else
+                newEndPos = endPos;
 
             // Select which special ease function will be used
             if (animationType == AnimationType.SpecialEase)
@@ -50,7 +56,11 @@ namespace EasingTC
         #region Functions
         public override void PlayAnimationInOut()
         {
-            newEndPos = newEndPos == endPosition ? defaultStartPos : endPosition;
+            if (addPosition)
+                newEndPos = newEndPos == defaultStartPos + addPos ? defaultStartPos : defaultStartPos + addPos;
+            else
+                newEndPos = newEndPos == endPos ? defaultStartPos : endPos;
+
             newStartPos = useLocalPosition ? transform.localPosition : transform.position;
 
             base.PlayAnimationInOut();

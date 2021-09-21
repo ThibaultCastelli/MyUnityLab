@@ -6,7 +6,10 @@ namespace EasingTC
     public class EasingScale : EasingBase
     {
         #region Variables
+        public bool addScale;
+
         public Vector3 endScale;
+        public Vector3 addScl;
 
         Vector3 defaultStartScale;
         Vector3 newStartScale;
@@ -23,7 +26,10 @@ namespace EasingTC
             animationToPlay = EaseScale;
             defaultStartScale = transform.localScale;
             newStartScale = defaultStartScale;
-            newEndScale = endScale;
+            if (addScale)
+                newEndScale = defaultStartScale + addScl;
+            else
+                newEndScale = endScale;
 
             // Select which special ease function will be used
             if (animationType == AnimationType.SpecialEase)
@@ -49,7 +55,10 @@ namespace EasingTC
         #region Functions
         public override void PlayAnimationInOut()
         {
-            newEndScale = newEndScale == endScale ? defaultStartScale : endScale;
+            if (addScale)
+                newEndScale = newEndScale == defaultStartScale + addScl ? defaultStartScale : defaultStartScale + addScl;
+            else
+                newEndScale = newEndScale == endScale ? defaultStartScale : endScale;
             newStartScale = transform.localScale;
 
             base.PlayAnimationInOut();
