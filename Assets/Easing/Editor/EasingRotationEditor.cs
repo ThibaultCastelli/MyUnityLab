@@ -42,9 +42,14 @@ namespace EasingTC
 
             _target.playOnAwake = EditorGUILayout.Toggle(new GUIContent("Play On Awake", "Select if the animation should automatically start when the game start."), _target.playOnAwake);
             _target.loop = EditorGUILayout.Toggle(new GUIContent("Loop", "Select if the animation should automatically loop."), _target.loop);
+            _target.useAnotherStartValue = EditorGUILayout.Toggle(new GUIContent("Use Another Start Rotation", "Select if you want to use a different start value.\nUnselect if you want to use the current value of the object as the start value."), _target.useAnotherStartValue);
             _target.addRotation = EditorGUILayout.Toggle(new GUIContent("Add Rotation", "Select if you want to add this value to the start value.\nUnselect if you want the object to go to this end value."), _target.addRotation);
 
             EditorGUILayout.Space();
+            EditorGUILayout.LabelField("ANIMATION VALUES", EditorStyles.boldLabel);
+
+            if (_target.useAnotherStartValue)
+                _target.startRot = EditorGUILayout.Vector3Field(new GUIContent("Start Rotation", "Set the value for the start of the animation."), _target.startRot);
 
             if (_target.addRotation)
                 _target.addRot = EditorGUILayout.Vector3Field(new GUIContent("Add Rotation", "Set the value that will be add to the start value."), _target.addRot);

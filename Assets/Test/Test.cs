@@ -17,11 +17,20 @@ public class Test : MonoBehaviour
     public SFXEvent SFXEventA;
     public SFXEvent SFXEventB;
 
+    public GameObject testObj;
+    float elapsedTime = 0;
+
     private void Start()
     {
+        
     }
     private void Update()
     {
+        testObj.transform.position = new Vector3(EasingFunctions.EaseInOutCubic(-4, 4, elapsedTime, 3), 0, 0);
+        elapsedTime += Time.deltaTime;
+        if (Input.GetKeyDown(KeyCode.G))
+            elapsedTime = 0;
+
         if (Input.GetKeyDown(KeyCode.A))
             musicEventA.Play();
 

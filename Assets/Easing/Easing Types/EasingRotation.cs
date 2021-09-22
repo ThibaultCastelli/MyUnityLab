@@ -6,8 +6,10 @@ namespace EasingTC
     public class EasingRotation : EasingBase
     {
         #region Variables
+        public bool useAnotherStartValue;
         public bool addRotation;
 
+        public Vector3 startRot;
         public Vector3 endRot;
         public Vector3 addRot;
 
@@ -24,8 +26,14 @@ namespace EasingTC
 
             // Select the animation and intialize default values
             animationToPlay = EaseRot;
-            defaultStartRot = transform.rotation.eulerAngles;
+
+            if (useAnotherStartValue)
+                defaultStartRot = startRot;
+            else
+                defaultStartRot = transform.rotation.eulerAngles;
+
             newStartRot = defaultStartRot;
+
             if (addRotation)
                 newEndRot = defaultStartRot + addRot;
             else

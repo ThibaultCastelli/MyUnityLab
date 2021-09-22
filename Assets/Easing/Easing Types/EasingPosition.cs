@@ -7,8 +7,10 @@ namespace EasingTC
     {
         #region Variables
         public bool useLocalPosition;
+        public bool useAnotherStartValue;
         public bool addPosition;
 
+        public Vector3 startPos;
         public Vector3 endPos;
         public Vector3 addPos;
 
@@ -25,8 +27,14 @@ namespace EasingTC
 
             // Select the animation and intialize default values
             animationToPlay = EasePos;
-            defaultStartPos = useLocalPosition ? transform.localPosition : transform.position;
+
+            if (useAnotherStartValue)
+                defaultStartPos = startPos;
+            else
+                defaultStartPos = useLocalPosition ? transform.localPosition : transform.position;
+
             newStartPos = defaultStartPos;
+
             if (addPosition)
                 newEndPos = defaultStartPos + addPos;
             else

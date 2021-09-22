@@ -42,8 +42,13 @@ namespace EasingTC
 
             _target.playOnAwake = EditorGUILayout.Toggle(new GUIContent("Play On Awake", "Select if the animation should automatically start when the game start."), _target.playOnAwake);
             _target.loop = EditorGUILayout.Toggle(new GUIContent("Loop", "Select if the animation should automatically loop."), _target.loop);
+            _target.useAnotherStartValue = EditorGUILayout.Toggle(new GUIContent("Use Another Start Color", "Select if you want to use a different start value.\nUnselect if you want to use the current value of the object as the start value."), _target.useAnotherStartValue);
 
             EditorGUILayout.Space();
+            EditorGUILayout.LabelField("ANIMATION VALUES", EditorStyles.boldLabel);
+
+            if (_target.useAnotherStartValue)
+                _target.startColor = EditorGUILayout.ColorField(new GUIContent("Start Color", "Set the value for the start of the animation."), _target.startColor);
 
             _target.endColor = EditorGUILayout.ColorField(new GUIContent("End Color", "Set the value that the object will reach."), _target.endColor);
             _target.duration = EditorGUILayout.Slider(new GUIContent("Duration", "Set the duration of the animation. (in s)"), _target.duration, 0.01f, 20f);

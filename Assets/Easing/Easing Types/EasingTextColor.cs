@@ -8,6 +8,9 @@ namespace EasingTC
     public class EasingTextColor : EasingBase
     {
         #region Variables
+        public bool useAnotherStartValue;
+
+        public Color startColor = Color.white;
         public Color endColor = Color.white;
 
         protected Color defaultStartColor;
@@ -38,6 +41,9 @@ namespace EasingTC
             }
             else
                 defaultStartColor = TMP.color;
+
+            if (useAnotherStartValue)
+                defaultStartColor = startColor;
 
             newStartColor = defaultStartColor;
             newEndColor = endColor;

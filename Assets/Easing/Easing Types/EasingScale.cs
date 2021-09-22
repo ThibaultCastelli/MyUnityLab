@@ -6,8 +6,10 @@ namespace EasingTC
     public class EasingScale : EasingBase
     {
         #region Variables
+        public bool useAnotherStartValue;
         public bool addScale;
 
+        public Vector3 startScale;
         public Vector3 endScale;
         public Vector3 addScl;
 
@@ -24,8 +26,14 @@ namespace EasingTC
 
             // Select the animation and intialize default values
             animationToPlay = EaseScale;
-            defaultStartScale = transform.localScale;
+
+            if (useAnotherStartValue)
+                defaultStartScale = startScale;
+            else
+                defaultStartScale = transform.localScale;
+
             newStartScale = defaultStartScale;
+
             if (addScale)
                 newEndScale = defaultStartScale + addScl;
             else
