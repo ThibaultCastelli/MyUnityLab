@@ -41,7 +41,12 @@ namespace EasingTC
             EditorGUILayout.LabelField("ANIMATION INFOS", EditorStyles.boldLabel);
 
             _target.playOnAwake = EditorGUILayout.Toggle(new GUIContent("Play On Awake", "Select if the animation should automatically start when the game start."), _target.playOnAwake);
+            
             _target.loop = EditorGUILayout.Toggle(new GUIContent("Loop", "Select if the animation should automatically loop."), _target.loop);
+            if (_target.loop)
+                _target.loopType = (LoopType)EditorGUILayout.EnumPopup(new GUIContent("Loop Type", "Simple : Loop the animation.\nMirror : Loop the animation back and forth. (can't work with Mirror animation type"), _target.loopType);
+
+            EditorGUILayout.Space();
             _target.useAnotherStartValue = EditorGUILayout.Toggle(new GUIContent("Use Another Start Rotation", "Select if you want to use a different start value.\nUnselect if you want to use the current value of the object as the start value."), _target.useAnotherStartValue);
             _target.addRotation = EditorGUILayout.Toggle(new GUIContent("Add Rotation", "Select if you want to add this value to the start value.\nUnselect if you want the object to go to this end value."), _target.addRotation);
 

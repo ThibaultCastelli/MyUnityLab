@@ -315,6 +315,7 @@ MonoBehaviour:
   specialEaseType: 0
   playOnAwake: 1
   loop: 0
+  loopType: 0
   duration: 1
   useAnotherStartValue: 0
   startColor: {r: 1, g: 1, b: 1, a: 1}
@@ -709,6 +710,34 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7548813479228692136, guid: 8e01ad4c3f2662845a19b9a9ff5efa3d, type: 3}
   m_PrefabInstance: {fileID: 7548813479056469435}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1023455227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1023455221}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35d72ce250f19d348a2431ae0369fb96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animationType: 4
+  easeInType: 6
+  easeOutType: 0
+  easeInOutType: 0
+  mirorType: 1
+  specialEaseType: 0
+  playOnAwake: 1
+  loop: 1
+  loopType: 1
+  duration: 1
+  useLocalPosition: 0
+  useAnotherStartValue: 0
+  addPosition: 0
+  startPos: {x: 0, y: 0, z: 0}
+  endPos: {x: 0, y: 0, z: 0}
+  addPos: {x: 0, y: 0, z: 0}
 --- !u!1 &1051325038
 GameObject:
   m_ObjectHideFlags: 0
@@ -851,6 +880,7 @@ MonoBehaviour:
   specialEaseType: 2
   playOnAwake: 1
   loop: 0
+  loopType: 1
   duration: 1
   useLocalPosition: 1
   useAnotherStartValue: 0
@@ -878,6 +908,7 @@ MonoBehaviour:
   specialEaseType: 0
   playOnAwake: 1
   loop: 0
+  loopType: 1
   duration: 0.5
   useAnotherStartValue: 1
   addRotation: 1
@@ -986,6 +1017,7 @@ MonoBehaviour:
   specialEaseType: 1
   playOnAwake: 1
   loop: 0
+  loopType: 0
   duration: 0.3
   useAnotherStartValue: 0
   addScale: 0
@@ -1012,6 +1044,7 @@ MonoBehaviour:
   specialEaseType: 0
   playOnAwake: 1
   loop: 0
+  loopType: 0
   duration: 0.5
   useAnotherStartValue: 1
   startColor: {r: 0, g: 0.70510626, b: 1, a: 1}
@@ -1148,6 +1181,10 @@ PrefabInstance:
     - target: {fileID: 7548813479228692136, guid: 8e01ad4c3f2662845a19b9a9ff5efa3d, type: 3}
       propertyPath: m_Name
       value: Cube
+      objectReference: {fileID: 0}
+    - target: {fileID: 7548813479228692136, guid: 8e01ad4c3f2662845a19b9a9ff5efa3d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7548813479228692140, guid: 8e01ad4c3f2662845a19b9a9ff5efa3d, type: 3}
       propertyPath: m_RootOrder

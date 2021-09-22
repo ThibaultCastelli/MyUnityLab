@@ -7,6 +7,7 @@ using ObserverTC;
 using EasingTC;
 using PoolTC;
 using MusicTC;
+using UnityEngine.SceneManagement;
 
 public class Test : MonoBehaviour
 {
@@ -26,10 +27,13 @@ public class Test : MonoBehaviour
     }
     private void Update()
     {
-        testObj.transform.position = new Vector3(EasingFunctions.EaseInOutCubic(-4, 4, elapsedTime, 3), 0, 0);
+        //testObj.transform.position = new Vector3(EasingFunctions.EaseInOutElastic(-4, 4, elapsedTime, 3), 0, 0);
         elapsedTime += Time.deltaTime;
         if (Input.GetKeyDown(KeyCode.G))
             elapsedTime = 0;
+
+        if (Input.GetKeyDown(KeyCode.H))
+            SceneManager.LoadScene(1);
 
         if (Input.GetKeyDown(KeyCode.A))
             musicEventA.Play();

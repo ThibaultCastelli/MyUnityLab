@@ -28,6 +28,8 @@ namespace MusicTC
         [Header("MUSIC INFOS")]
         [Tooltip("Select if the layers should automatically replay.")]
         [SerializeField] bool loop = true;
+        [Tooltip("Select if you want the music to stop when going from one scene to the other.")]
+        [SerializeField] bool stopOnSceneChange = false;
         [Tooltip("Select the default volume for each layer.\n0 = mute | 1 = full sound")]
         [SerializeField] [Range(0, 1)] float defaultVolume = 1;
         [Tooltip("The type of layer blend: \nAdditive : All the layer can be play at the same time.\nSingle : Only one layer can be play at the same time.")]
@@ -42,6 +44,7 @@ namespace MusicTC
         public AudioMixerGroup MixerGroup => mixerGroup;
         public LayerType LayerType => layerType;
         public bool Loop => loop;
+        public bool StopOnSceneChange => stopOnSceneChange;
         public float DefaultVolume => defaultVolume;
         #endregion
 

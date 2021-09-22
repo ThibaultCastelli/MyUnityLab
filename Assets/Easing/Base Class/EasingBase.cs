@@ -32,6 +32,7 @@ namespace EasingTC
         EaseInQuart,
         EaseInQuint,
         EaseInCirc,
+        EaseInExpo,
     }
     public enum EaseOut
     {
@@ -40,6 +41,7 @@ namespace EasingTC
         EaseOutQuart,
         EaseOutQuint,
         EaseOutCirc,
+        EaseOutExpo,
     }
     public enum EaseInOut
     {
@@ -63,6 +65,12 @@ namespace EasingTC
         EaseQuart,
         EaseQuint,
         EaseCirc,
+        EaseExpo,
+    }
+    public enum LoopType
+    {
+        Simple,
+        Mirror,
     }
     #endregion
 
@@ -78,6 +86,7 @@ namespace EasingTC
 
         public bool playOnAwake;
         public bool loop;
+        public LoopType loopType;
         [Range(0.1f, 20)] public float duration = 1;
 
         protected ValueToModify valueToModify;
@@ -125,6 +134,9 @@ namespace EasingTC
                         case EaseIn.EaseInCirc:
                             easeFunc = EaseInCirc;
                             break;
+                        case EaseIn.EaseInExpo:
+                            easeFunc = EaseInExpo;
+                            break;
                     }
                     break;
 
@@ -145,6 +157,9 @@ namespace EasingTC
                             break;
                         case EaseOut.EaseOutCirc:
                             easeFunc = EaseOutCirc;
+                            break;
+                        case EaseOut.EaseOutExpo:
+                            easeFunc = EaseOutExpo;
                             break;
                     }
                     break;
@@ -191,6 +206,9 @@ namespace EasingTC
                         case MirorType.EaseCirc:
                             easeFunc = MirrorCirc;
                             break;
+                        case MirorType.EaseExpo:
+                            easeFunc = MirrorExpo;
+                            break;
                     }
                     break;
             }
@@ -209,7 +227,12 @@ namespace EasingTC
         {
             // Replay automatically the animation if loop is selected on the editor
             if (loop && !_isInTransition && _hasPlayed)
-                PlayAnimationInOut();
+            {
+                if (loopType == LoopType.Simple)
+                    PlayAnimation();
+                else
+                    PlayAnimationInOut();
+            }
         }
         #endregion
 
@@ -231,7 +254,7 @@ namespace EasingTC
         {
             if (animationType == AnimationType.Mirror)
             {
-                Debug.LogError("ERROR : Can't play in reverse for a mirror animation type.");
+                Debug.LogError("ERROR : Can't play in reverse for a mirror animation type.\nFrom : " + this.gameObject.name);
                 return;
             }
             else if (!_hasPlayed)
@@ -256,12 +279,14 @@ namespace EasingTC
         float EaseInQuart(float t) => t * t * t * t;
         float EaseInQuint(float t) => t * t * t * t;
         float EaseInCirc(float t) => 1 - Mathf.Sqrt(1 - (t * t));
+        float EaseInExpo(float t) => Mathf.Pow(2, 10 * (t - 1));
 
         float EaseOutQuad(float t) => t * (2 - t);
         float EaseOutCubic(float t) => (--t) * t * t + 1;
         float EaseOutQuart(float t) => 1 - (--t) * t * t * t;
         float EaseOutQuint(float t) => 1 + (--t) * t * t * t * t;
         float EaseOutCirc(float t) => Mathf.Sqrt(1 - (t - 1) * (t - 1));
+        float EaseOutExpo(float t) => (-Mathf.Pow(2, -10 * t) + 1);
 
         float EaseInOutQuad(float t) => t < 0.5f ? 2 * t * t : -1 + (4 - 2 * t) * t;
         float EaseInOutCubic(float t) => t < 0.5f ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
@@ -277,6 +302,7 @@ namespace EasingTC
         float MirrorQuart(float t) => t < 0.5f ? EaseInQuart(t / 0.5f) : EaseInQuart((1 - t) / 0.5f);
         float MirrorQuint(float t) => t < 0.5f ? EaseInQuint(t / 0.5f) : EaseInQuint((1 - t) / 0.5f);
         float MirrorCirc(float t) => t < 0.5f ? EaseInCirc(t / 0.5f) : EaseInCirc((1 - t) / 0.5f);
+        float MirrorExpo(float t) => t < 0.5f ? EaseInExpo(t / 0.5f) : EaseInExpo((1 - t) / 0.5f);
         #endregion
 
         protected IEnumerator NullAnimation() { yield break; }

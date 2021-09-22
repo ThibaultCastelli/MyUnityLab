@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace MusicTC
 {
@@ -81,6 +82,15 @@ namespace MusicTC
             GameObject musicPlayerBGO = new GameObject("Music_Player_B");
             musicPlayerBGO.transform.parent = this.transform;
             _musicPlayerB = musicPlayerBGO.AddComponent<MusicPlayer>();
+        }
+
+        private void OnEnable()
+        {
+            SceneManager.sceneLoaded += StopOnSceneLoad;
+        }
+        private void OnDisable()
+        {
+            SceneManager.sceneLoaded -= StopOnSceneLoad;
         }
         #endregion
 
@@ -215,6 +225,12 @@ namespace MusicTC
         public void DecreaseLayer(MusicEvent musicEvent, float fadeTime = 0)
         {
             SetLayer(musicEvent, _currentLayer - 1, fadeTime);
+        }
+
+        void StopOnSceneLoad(Scene scene, LoadSceneMode loadSceneMode)
+        {
+            if (_currentMusicEvent != null && _currentMusicEvent.StopOnSceneChange)
+                Stop(_currentMusicEvent);
         }
         #endregion
     }
