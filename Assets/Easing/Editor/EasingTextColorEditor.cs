@@ -1,15 +1,41 @@
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 namespace EasingTC
 {
     [CustomEditor(typeof(EasingTextColor))]
     public class EasingTextColorEditor : Editor
     {
+        EasingTextColor _target;
+
+        Color prevColor;
+        bool prevColorFlag;
+
+        TextMeshProUGUI TMP = null;
+        Text text = null;
+
+        private void OnEnable()
+        {
+            _target = (EasingTextColor)target;
+
+            if (!_target.TryGetComponent<TextMeshProUGUI>(out TMP))
+            {
+                if (!_target.TryGetComponent<Text>(out text))
+                {
+                    Debug.LogError("ERROR : Can't find the renderer or the image on this game object.\nLocation : " + _target.gameObject.name);
+                    return;
+                }
+                else
+                    prevColor = text.color;
+            }
+            else
+                prevColor = TMP.color;
+        }
+
         public override void OnInspectorGUI()
         {
-            EasingTextColor _target = (EasingTextColor)target;
-
             EditorGUILayout.LabelField("ANIMATION CHOICE", EditorStyles.boldLabel);
 
             _target.animationType = (AnimationType)EditorGUILayout.EnumPopup(new GUIContent("Animation Type", "Ease In : Start slow.\nEase Out : End slow.\nEase In Out : Start and end slow.\nMirror : Go back and forth.\nSpecial Ease : Bounce or back effect."), _target.animationType);
@@ -57,6 +83,44 @@ namespace EasingTC
 
             _target.endColor = EditorGUILayout.ColorField(new GUIContent("End Color", "Set the value that the object will reach."), _target.endColor);
             _target.duration = EditorGUILayout.Slider(new GUIContent("Duration", "Set the duration of the animation. (in s)"), _target.duration, 0.01f, 20f);
+
+            EditorGUILayout.Space();
+
+            EditorGUILayout.LabelField("OPTIONS", EditorStyles.boldLabel);
+            _target.followEndValue = EditorGUILayout.Toggle(new GUIContent("Follow End Value", "Select to see the end value you set."), _target.followEndValue);
+
+            if (_target.followEndValue)
+            {
+                if (!prevColorFlag)
+                {
+                    if (TMP != null)
+                        prevColor = TMP.material.color;
+                    else
+                        prevColor = text.color;
+                }
+                prevColorFlag = true;
+
+                if (TMP != null)
+                    TMP.material.color = _target.endColor;
+                else
+                    text.color = _target.endColor;
+            }
+            else
+            {
+                if (prevColorFlag)
+                {
+                    if (TMP != null)
+                        TMP.material.color = prevColor;
+                    else
+                        text.color = prevColor;
+                }
+                prevColorFlag = false;
+
+                if (TMP != null)
+                    prevColor = TMP.material.color;
+                else
+                    prevColor = text.color;
+            }
         }
     }
 }

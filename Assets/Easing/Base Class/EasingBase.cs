@@ -7,14 +7,6 @@ using TMPro;
 namespace EasingTC
 {
     #region Enums
-    public enum ValueToModify
-    {
-        Position,
-        Rotation,
-        Scale,
-        Color,
-        TextColor,
-    }
     public enum AnimationType
     {
         EaseIn,
@@ -89,7 +81,7 @@ namespace EasingTC
         public LoopType loopType;
         [Range(0.1f, 20)] public float duration = 1;
 
-        protected ValueToModify valueToModify;
+        public bool followEndValue;
 
         // Delegates to store the animation to play and the ease type to use
         protected Func<IEnumerator> animationToPlay;
@@ -216,9 +208,9 @@ namespace EasingTC
         #endregion
 
         #region Start & Update
-        private void Start()
+        private void OnEnable()
         {
-            // Play the animation as soon as the game start if playOnAwake is selected on the editor
+            // Play the animation as soon as the object is enable if playOnAwake is selected on the editor
             if (playOnAwake)
                 PlayAnimation();
         }

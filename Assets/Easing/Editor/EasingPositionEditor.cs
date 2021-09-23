@@ -6,9 +6,23 @@ namespace EasingTC
     [CustomEditor(typeof(EasingPosition))]
     public class EasingPositionEditor : Editor
     {
+        EasingPosition _target;
+
+        Vector3 prevPos;
+        bool prevPosFlag;
+
+        private void OnEnable()
+        {
+            _target = (EasingPosition)target;
+
+            if (_target.useLocalPosition)
+                prevPos = _target.transform.localPosition;
+            else
+                prevPos = _target.transform.position;
+        }
+
         public override void OnInspectorGUI()
         {
-            EasingPosition _target = (EasingPosition)target;
 
             EditorGUILayout.LabelField("ANIMATION CHOICE", EditorStyles.boldLabel);
 
@@ -63,6 +77,54 @@ namespace EasingTC
                 _target.endPos = EditorGUILayout.Vector3Field(new GUIContent("End Position", "Set the value that the object will reach."), _target.endPos);
 
             _target.duration = EditorGUILayout.Slider(new GUIContent("Duration", "Set the duration of the animation. (in s)"), _target.duration, 0.01f, 20f);
+
+            EditorGUILayout.Space();
+
+            EditorGUILayout.LabelField("OPTIONS", EditorStyles.boldLabel);
+            _target.followEndValue = EditorGUILayout.Toggle(new GUIContent("Follow End Value", "Select to see the end value you set."), _target.followEndValue);
+
+            if (_target.followEndValue)
+            {
+                if (!prevPosFlag)
+                {
+                    if (_target.useLocalPosition)
+                        prevPos = _target.transform.localPosition;
+                    else
+                        prevPos = _target.transform.position;
+                }
+                prevPosFlag = true;
+
+                if (_target.addPosition)
+                {
+                    if (_target.useLocalPosition)
+                        _target.transform.localPosition = prevPos + _target.addPos;
+                    else
+                        _target.transform.position = prevPos + _target.addPos;
+                }
+                else
+                {
+                    if (_target.useLocalPosition)
+                        _target.transform.localPosition = _target.endPos;
+                    else
+                        _target.transform.position = _target.endPos;
+                }
+            }
+            else
+            {
+                if (prevPosFlag)
+                {
+                    if (_target.useLocalPosition)
+                        _target.transform.localPosition = prevPos;
+                    else
+                        _target.transform.position = prevPos;
+                }
+                prevPosFlag = false;
+
+                if (_target.useLocalPosition)
+                    prevPos = _target.transform.localPosition;
+                else
+                    prevPos = _target.transform.position;
+            }
         }
     }
 }

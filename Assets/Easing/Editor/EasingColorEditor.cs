@@ -1,15 +1,40 @@
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace EasingTC
 {
     [CustomEditor(typeof(EasingColor))]
     public class EasingColorEditor : Editor
     {
+        EasingColor _target;
+
+        Color prevColor;
+        bool prevColorFlag;
+
+        Renderer renderer = null;
+        Image image = null;
+
+        private void OnEnable()
+        {
+            _target = (EasingColor)target;
+
+            if (!_target.TryGetComponent<Renderer>(out renderer))
+            {
+                if (!_target.TryGetComponent<Image>(out image))
+                {
+                    Debug.LogError("ERROR : Can't find the renderer or the image on this game object.\nLocation : " + _target.gameObject.name);
+                    return;
+                }
+                else
+                    prevColor = image.color;
+            }
+            else
+                prevColor = renderer.material.color;
+        }
+
         public override void OnInspectorGUI()
         {
-            EasingColor _target = (EasingColor)target;
-
             EditorGUILayout.LabelField("ANIMATION CHOICE", EditorStyles.boldLabel);
 
             _target.animationType = (AnimationType)EditorGUILayout.EnumPopup(new GUIContent("Animation Type", "Ease In : Start slow.\nEase Out : End slow.\nEase In Out : Start and end slow.\nMirror : Go back and forth.\nSpecial Ease : Bounce or back effect."), _target.animationType);
@@ -57,6 +82,44 @@ namespace EasingTC
 
             _target.endColor = EditorGUILayout.ColorField(new GUIContent("End Color", "Set the value that the object will reach."), _target.endColor);
             _target.duration = EditorGUILayout.Slider(new GUIContent("Duration", "Set the duration of the animation. (in s)"), _target.duration, 0.01f, 20f);
+
+            EditorGUILayout.Space();
+
+            EditorGUILayout.LabelField("OPTIONS", EditorStyles.boldLabel);
+            _target.followEndValue = EditorGUILayout.Toggle(new GUIContent("Follow End Value", "Select to see the end value you set."), _target.followEndValue);
+
+            if (_target.followEndValue)
+            {
+                if (!prevColorFlag)
+                {
+                    if (renderer != null)
+                        prevColor = renderer.material.color;
+                    else
+                        prevColor = image.color;
+                }
+                prevColorFlag = true;
+
+                if (renderer != null)
+                    renderer.material.color = _target.endColor;
+                else
+                    image.color = _target.endColor;
+            }
+            else
+            {
+                if (prevColorFlag)
+                {
+                    if (renderer != null)
+                        renderer.material.color = prevColor;
+                    else
+                        image.color = prevColor;
+                }
+                prevColorFlag = false;
+
+                if (renderer != null)
+                    prevColor = renderer.material.color;
+                else
+                    prevColor = image.color;
+            }
         }
     }
 }

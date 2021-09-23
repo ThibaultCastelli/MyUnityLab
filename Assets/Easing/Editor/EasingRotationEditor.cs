@@ -6,10 +6,20 @@ namespace EasingTC
     [CustomEditor(typeof(EasingRotation))]
     public class EasingRotationEditor : Editor
     {
+        EasingRotation _target;
+
+        Quaternion prevRot;
+        bool prevRotFlag;
+
+        private void OnEnable()
+        {
+            _target = (EasingRotation)target;
+
+            prevRot = _target.transform.rotation;
+        }
+
         public override void OnInspectorGUI()
         {
-            EasingRotation _target = (EasingRotation)target;
-
             EditorGUILayout.LabelField("ANIMATION CHOICE", EditorStyles.boldLabel);
 
             _target.animationType = (AnimationType)EditorGUILayout.EnumPopup(new GUIContent("Animation Type", "Ease In : Start slow.\nEase Out : End slow.\nEase In Out : Start and end slow.\nMirror : Go back and forth.\nSpecial Ease : Bounce or back effect."), _target.animationType);
@@ -62,6 +72,31 @@ namespace EasingTC
                 _target.endRot = EditorGUILayout.Vector3Field(new GUIContent("End Rotation", "Set the value that the object will reach."), _target.endRot);
 
             _target.duration = EditorGUILayout.Slider(new GUIContent("Duration", "Set the duration of the animation. (in s)"), _target.duration, 0.01f, 20f);
+
+            EditorGUILayout.Space();
+
+            EditorGUILayout.LabelField("OPTIONS", EditorStyles.boldLabel);
+            _target.followEndValue = EditorGUILayout.Toggle(new GUIContent("Follow End Value", "Select to see the end value you set."), _target.followEndValue);
+
+            if (_target.followEndValue)
+            {
+                if (!prevRotFlag)
+                    prevRot = _target.transform.rotation;
+                prevRotFlag = true;
+
+                if (_target.addRotation)
+                    _target.transform.rotation = Quaternion.Euler(prevRot.eulerAngles + _target.addRot);
+                else
+                    _target.transform.rotation = Quaternion.Euler(_target.endRot);
+            }
+            else
+            {
+                if (prevRotFlag)
+                    _target.transform.rotation = prevRot;
+                prevRotFlag = false;
+
+                prevRot = _target.transform.rotation;
+            }
         }
     }
 }

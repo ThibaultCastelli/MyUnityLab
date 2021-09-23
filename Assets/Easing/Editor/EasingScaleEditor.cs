@@ -6,10 +6,19 @@ namespace EasingTC
     [CustomEditor(typeof(EasingScale))]
     public class EasingScaleEditor : Editor
     {
+        EasingScale _target;
+
+        Vector3 prevScale;
+        bool prevScaleFlag;
+
+        private void OnEnable()
+        {
+            _target = (EasingScale)target;
+            prevScale = _target.transform.localScale;
+        }
+
         public override void OnInspectorGUI()
         {
-            EasingScale _target = (EasingScale)target;
-
             EditorGUILayout.LabelField("ANIMATION CHOICE", EditorStyles.boldLabel);
 
             _target.animationType = (AnimationType)EditorGUILayout.EnumPopup(new GUIContent("Animation Type", "Ease In : Start slow.\nEase Out : End slow.\nEase In Out : Start and end slow.\nMirror : Go back and forth.\nSpecial Ease : Bounce or back effect."), _target.animationType);
@@ -62,6 +71,31 @@ namespace EasingTC
                 _target.endScale = EditorGUILayout.Vector3Field(new GUIContent("End Scale", "Set the value that the object will reach."), _target.endScale);
 
             _target.duration = EditorGUILayout.Slider(new GUIContent("Duration", "Set the duration of the animation. (in s)"), _target.duration, 0.01f, 20f);
+
+            EditorGUILayout.Space();
+
+            EditorGUILayout.LabelField("OPTIONS", EditorStyles.boldLabel);
+            _target.followEndValue = EditorGUILayout.Toggle(new GUIContent("Follow End Value", "Select to see the end value you set."), _target.followEndValue);
+
+            if (_target.followEndValue)
+            {
+                if (!prevScaleFlag)
+                    prevScale = _target.transform.localScale;
+                prevScaleFlag = true;
+
+                if (_target.addScale)
+                    _target.transform.localScale = prevScale + _target.addScl;
+                else
+                    _target.transform.localScale = _target.endScale;
+            }
+            else
+            {
+                if (prevScaleFlag)
+                    _target.transform.localScale = prevScale;
+                prevScaleFlag = false;
+
+                prevScale = _target.transform.localScale;
+            }
         }
     }
 }
