@@ -8,6 +8,7 @@ using EasingTC;
 using PoolTC;
 using MusicTC;
 using UnityEngine.SceneManagement;
+using PathFindingTC;
 
 public class Test : MonoBehaviour
 {
@@ -21,12 +22,29 @@ public class Test : MonoBehaviour
     public GameObject testObj;
     float elapsedTime = 0;
 
+    GridMap grid;
+
     private void Start()
     {
-        
+        grid = new GridMap(4, 2, 10f, new Vector3(-10, 0));
     }
+
+
     private void Update()
     {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mousePos.z = 0;
+            grid.SetValue(mousePos, 57);
+
+        }
+        if (Input.GetMouseButtonDown(1))
+        {
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mousePos.z = 0;
+            grid.GetValue(mousePos);
+        }
         //testObj.transform.position = new Vector3(EasingFunctions.EaseInOutElastic(-4, 4, elapsedTime, 3), 0, 0);
         elapsedTime += Time.deltaTime;
         if (Input.GetKeyDown(KeyCode.G))
