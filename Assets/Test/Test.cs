@@ -26,9 +26,8 @@ public class Test : MonoBehaviour
 
     private void Start()
     {
-        grid = new GridMap(4, 2, 10f, new Vector3(-10, 0));
+        grid = new GridMap(4, 2, 10f, new Vector3(-10, 0), 2, 100);
     }
-
 
     private void Update()
     {
@@ -36,7 +35,7 @@ public class Test : MonoBehaviour
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mousePos.z = 0;
-            grid.SetValue(mousePos, 57);
+            grid.AddValue(mousePos, 57);
 
         }
         if (Input.GetMouseButtonDown(1))
