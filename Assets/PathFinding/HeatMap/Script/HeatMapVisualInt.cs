@@ -6,9 +6,9 @@ using UnityEngine;
 namespace PathFindingTC
 {
     [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
-    public class HeatMapVisual : MonoBehaviour
+    public class HeatMapVisualInt : MonoBehaviour
     {
-        [HideInInspector] public GridMap grid;
+        [HideInInspector] public GridMap<int> grid;
 
         Mesh mesh;
         MeshFilter meshFilter;
@@ -16,6 +16,8 @@ namespace PathFindingTC
         Vector3[] vertices;
         Vector2[] uv;
         int[] triangles;
+
+        bool updateHeatMap;
 
         private void Awake()
         {
@@ -25,17 +27,20 @@ namespace PathFindingTC
 
         private void Start()
         {
-            grid.OnGridValueChanged += UpdateHeatMapVisual;
+            grid.OnGridValueChanged += (int x, int y) => updateHeatMap = true;
+
+            // Set the meshes to default value
             vertices = new Vector3[4 * grid.Width * grid.Height];
             uv = new Vector2[4 * grid.Width * grid.Height];
             triangles = new int[6 * grid.Width * grid.Height];
 
+            // Place the meshes on the grid
             for (int x = 0; x < grid.Width; x++)
             {
                 for (int y = 0; y < grid.Height; y++)
                 {
                     int index = x * grid.Height + y;
-                    float uvValue = (float)grid.GetValue(x, y) / grid.MaxCellValue;
+                    float uvValue = 0;      // value / maxValue
                     Vector3 currentWorldPos = grid.GetWorldPos(x, y);
 
                     vertices[index * 4] = currentWorldPos;
@@ -64,15 +69,31 @@ namespace PathFindingTC
             meshFilter.mesh = mesh;
         }
 
-        public void UpdateHeatMapVisual(int[,] grid, int x, int y)
+        private void LateUpdate()
         {
-            int index = x * this.grid.Height + y;
-            float uvValue = (float)this.grid.GetValue(x, y) / this.grid.MaxCellValue;
+            // Update the heat map only at the end of the frame
+            if (updateHeatMap)
+            {
+                updateHeatMap = false;
+                UpdateHeatMapVisual();
+            }
+        }
 
-            uv[index * 4] = new Vector2(uvValue, 0);
-            uv[index * 4 + 1] = new Vector2(uvValue, 0);
-            uv[index * 4 + 2] = new Vector2(uvValue, 0);
-            uv[index * 4 + 3] = new Vector2(uvValue, 0);
+        public void UpdateHeatMapVisual()
+        {
+            for (int x = 0; x < grid.Width; x++)
+            {
+                for (int y = 0; y < grid.Height; y++)
+                {
+                    int index = x * grid.Height + y;
+                    float uvValue = 0;      // value / maxValue
+
+                    uv[index * 4] = new Vector2(uvValue, 0);
+                    uv[index * 4 + 1] = new Vector2(uvValue, 0);
+                    uv[index * 4 + 2] = new Vector2(uvValue, 0);
+                    uv[index * 4 + 3] = new Vector2(uvValue, 0);
+                }
+            }
 
             mesh.uv = uv;
             meshFilter.mesh = mesh;

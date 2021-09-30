@@ -1,16 +1,14 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
 namespace PathFindingTC
 {
-    public class GridMap
+    public class GridMap<T>
     {
         #region Variables
-        int[,] grid;
-        TextMeshPro[,] debugGrid;      // Used to draw the grid
+        T[,] grid;
+        TextMeshPro[,] debugGrid;
 
         Vector3 origin = Vector3.zero;
 
@@ -18,54 +16,54 @@ namespace PathFindingTC
         int height;
         float cellSize;
 
-        int minCellValue;
-        int maxCellValue;
+        bool drawGrid = true;                               // Set to true to draw the grid and display values
 
-        bool drawGrid;
+        Transform parent;                                   // Where the TMPro will be create for debug
 
-        Transform parent;
-
-        public Action<int[,], int, int> OnGridValueChanged;     // Raised when a value is changed in the grid (send as arguments the grid, the x and y coordonates modified)
+        public Action<int, int> OnGridValueChanged;         // Method called when an object is changed in the grid
+        Func<GridMap<T>, int, int, T> createObjectFunc;     // Method to create a default grid object
         #endregion
 
         #region Properties
         public Vector3 Origin => origin;
         public int Width => width;
         public int Height => height;
-        public int MinCellValue => minCellValue;
-        public int MaxCellValue => maxCellValue;
         public float CellSize => cellSize;
         #endregion
 
-        #region Constructors
-        public GridMap(int width, int height, float cellSize, Vector3 origin, int minCellValue, int maxCellValue, Transform parent = null)
+        #region Constructor
+        public GridMap(Vector3 origin, int width, int height, float cellSize, Func<GridMap<T>, int, int, T> createObjectFunc, Transform parent = null)
         {
-            // Set values
+            // Set variables
+            this.origin = origin;
+
             if (width < 1)
-                width = 1;
+                this.width = 1;
             else
                 this.width = width;
 
             if (height < 1)
-                height = 1;
+                this.height = 1;
             else
                 this.height = height;
 
             if (cellSize < 0)
-                cellSize = 0.01f;
+                this.cellSize = 0.01f;
             else
                 this.cellSize = cellSize;
 
-            this.origin = origin;
-            this.minCellValue = minCellValue;
-            this.maxCellValue = maxCellValue;
-
-            grid = new int[width, height];
+            grid = new T[width, height];
             debugGrid = new TextMeshPro[width, height];
+
+            this.createObjectFunc = createObjectFunc;
 
             this.parent = parent;
 
-            drawGrid = true;      // Set to true to draw the grid
+            // Set the grid with default grid objects
+            for (int x = 0; x < width; x++)
+                for (int y = 0; y < height; y++)
+                    grid[x, y] = createObjectFunc(this, x, y);
+
             if (!drawGrid)
                 return;
 
@@ -74,9 +72,7 @@ namespace PathFindingTC
             {
                 for (int y = 0; y < grid.GetLength(1); y++)
                 {
-                    grid[x, y] = minCellValue;
-                    debugGrid[x, y] = CreateTextMeshPro(grid[x, y].ToString(), GetWorldPos(x, y) + new Vector3(cellSize, cellSize) * 0.5f);
-                    
+                    debugGrid[x, y] = CreateTextMeshPro(grid[x, y]?.ToString(), GetWorldPos(x, y) + new Vector3(cellSize, cellSize) * 0.5f);
                     Debug.DrawLine(GetWorldPos(x, y), GetWorldPos(x + 1, y), Color.white, 100f);
                     Debug.DrawLine(GetWorldPos(x, y), GetWorldPos(x, y + 1), Color.white, 100f);
                 }
@@ -89,43 +85,33 @@ namespace PathFindingTC
         #endregion
 
         #region Functions
-        public void SetValue(int x, int y, int value)
+        public void SetGridObject(int x, int y, T obj)
         {
-            // Do nothing if out of the grid
             if (x < 0 || y < 0 || x >= width || y >= height)
                 return;
 
-            grid[x, y] = Mathf.Clamp(value, minCellValue, maxCellValue);
-            OnGridValueChanged(grid, x, y);
+            grid[x, y] = obj;
+            OnGridValueChanged?.Invoke(x, y);
         }
-        public void SetValue(Vector3 worldPos, int value)
+        public void SetGridObject(Vector3 worldPos, T obj)
         {
             int x, y;
             GetCoordonates(worldPos, out x, out y);
-            SetValue(x, y, value);
+            SetGridObject(x, y, obj);
         }
 
-        public void AddValue(int x, int y, int value)
+        public T GetGridObject(int x, int y)
         {
-            grid[x, y] = Mathf.Clamp(GetValue(x, y) + value, minCellValue, maxCellValue);
-            OnGridValueChanged(grid, x, y);
-        }
-        public void AddValue(Vector3 worldPos, int value)
-        {
-            int x, y;
-            GetCoordonates(worldPos, out x, out y);
-            AddValue(x, y, value);
-        }
+            if (x < 0 || y < 0 || x >= width || y >= height)
+                return default(T);
 
-        public int GetValue(int x, int y)
-        {
             return grid[x, y];
         }
-        public int GetValue(Vector3 worldPos)
+        public T GetGridObject(Vector3 worldPos)
         {
             int x, y;
             GetCoordonates(worldPos, out x, out y);
-            return GetValue(x, y);
+            return GetGridObject(x, y);
         }
 
         public void GetCoordonates(Vector3 worldPos, out int x, out int y)
@@ -138,18 +124,29 @@ namespace PathFindingTC
         {
             return (new Vector3(x, y) * cellSize) + origin;
         }
+
+        public void ResetGrid()
+        {
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    grid[x, y] = createObjectFunc(this, x, y);
+                    OnGridValueChanged?.Invoke(x, y);
+                }
+            }
+        }
         #endregion
 
-        #region Utility
-        void UpdateDebugGrid(int[,] grid, int x, int y)
+        #region Utilities
+        void UpdateDebugGrid(int x, int y)
         {
-            if (drawGrid)
-                debugGrid[x, y].text = grid[x, y].ToString();
+            debugGrid[x, y].text = grid[x, y]?.ToString();
         }
 
         TextMeshPro CreateTextMeshPro(string txt, Vector3 pos)
         {
-            GameObject textGO = new GameObject("TextMeshPro", typeof(TextMeshPro));
+            GameObject textGO = new GameObject("Debug_TMPro_Grid", typeof(TextMeshPro));
             textGO.transform.SetParent(parent);
             textGO.transform.localPosition = pos;
 

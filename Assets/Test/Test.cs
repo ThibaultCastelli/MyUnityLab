@@ -10,6 +10,36 @@ using MusicTC;
 using UnityEngine.SceneManagement;
 using PathFindingTC;
 
+public class GridObject
+{
+    public int maxValue;
+    public int minValue;
+
+    public bool value;
+
+    public GridMap<GridObject> grid;
+    public int x;
+    public int y;
+
+    public GridObject(GridMap<GridObject> grid, int x, int y)
+    {
+
+        this.grid = grid;
+        this.x = x;
+        this.y = y;
+    }
+
+    public void Add(bool value)
+    {
+        this.value = value;
+        grid.OnGridValueChanged(x, y);
+    }
+
+    public override string ToString()
+    {
+        return value.ToString();
+    }
+}
 public class Test : MonoBehaviour
 {
     public MusicEvent musicEventA;
@@ -22,13 +52,13 @@ public class Test : MonoBehaviour
     public GameObject testObj;
     float elapsedTime = 0;
 
-    GridMap grid;
-    public HeatMapVisual heatMapVisual;
+    GridMap<GridObject> grid;
+    public HeatMapVisualInt heatMapVisual;
 
     private void Awake()
     {
-        grid = new GridMap(4, 2, 10f, new Vector3(-10, 0), 0, 200, this.transform);
-        heatMapVisual.grid = grid;
+        grid = new GridMap<GridObject>(Vector3.zero, 5, 5, 5, (GridMap<GridObject> g, int x, int y) => new GridObject(g,x,y), this.transform);
+        //heatMapVisual.grid = grid;
     }
 
     private void Update()
@@ -37,14 +67,11 @@ public class Test : MonoBehaviour
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mousePos.z = 0;
-            grid.AddValue(mousePos, 20);
-
+            grid.GetGridObject(mousePos).Add(true);
         }
         if (Input.GetMouseButtonDown(1))
         {
-            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            mousePos.z = 0;
-            grid.SetValue(mousePos, 0);
+            grid.ResetGrid();
         }
         //testObj.transform.position = new Vector3(EasingFunctions.EaseInOutElastic(-4, 4, elapsedTime, 3), 0, 0);
         elapsedTime += Time.deltaTime;
