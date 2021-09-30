@@ -23,6 +23,8 @@ namespace PathFindingTC
 
         bool drawGrid;
 
+        Transform parent;
+
         public Action<int[,], int, int> OnGridValueChanged;     // Raised when a value is changed in the grid (send as arguments the grid, the x and y coordonates modified)
         #endregion
 
@@ -30,11 +32,13 @@ namespace PathFindingTC
         public Vector3 Origin => origin;
         public int Width => width;
         public int Height => height;
+        public int MinCellValue => minCellValue;
+        public int MaxCellValue => maxCellValue;
         public float CellSize => cellSize;
         #endregion
 
         #region Constructors
-        public GridMap(int width, int height, float cellSize, Vector3 origin, int minCellValue, int maxCellValue)
+        public GridMap(int width, int height, float cellSize, Vector3 origin, int minCellValue, int maxCellValue, Transform parent = null)
         {
             // Set values
             if (width < 1)
@@ -58,6 +62,8 @@ namespace PathFindingTC
 
             grid = new int[width, height];
             debugGrid = new TextMeshPro[width, height];
+
+            this.parent = parent;
 
             drawGrid = true;      // Set to true to draw the grid
             if (!drawGrid)
@@ -144,6 +150,7 @@ namespace PathFindingTC
         TextMeshPro CreateTextMeshPro(string txt, Vector3 pos)
         {
             GameObject textGO = new GameObject("TextMeshPro", typeof(TextMeshPro));
+            textGO.transform.SetParent(parent);
             textGO.transform.localPosition = pos;
 
             TextMeshPro text = textGO.GetComponent<TextMeshPro>();

@@ -23,10 +23,12 @@ public class Test : MonoBehaviour
     float elapsedTime = 0;
 
     GridMap grid;
+    public HeatMapVisual heatMapVisual;
 
-    private void Start()
+    private void Awake()
     {
-        grid = new GridMap(4, 2, 10f, new Vector3(-10, 0), 2, 100);
+        grid = new GridMap(4, 2, 10f, new Vector3(-10, 0), 0, 200, this.transform);
+        heatMapVisual.grid = grid;
     }
 
     private void Update()
@@ -35,14 +37,14 @@ public class Test : MonoBehaviour
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mousePos.z = 0;
-            grid.AddValue(mousePos, 57);
+            grid.AddValue(mousePos, 20);
 
         }
         if (Input.GetMouseButtonDown(1))
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mousePos.z = 0;
-            grid.GetValue(mousePos);
+            grid.SetValue(mousePos, 0);
         }
         //testObj.transform.position = new Vector3(EasingFunctions.EaseInOutElastic(-4, 4, elapsedTime, 3), 0, 0);
         elapsedTime += Time.deltaTime;
