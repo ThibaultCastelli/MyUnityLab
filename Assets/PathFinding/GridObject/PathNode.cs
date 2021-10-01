@@ -6,17 +6,22 @@ namespace PathFindingTC
 {
     public class PathNode
     {
+        #region Variables
         GridMap<PathNode> grid;
 
         int x;
         int y;
 
-        int gCost = 0;      // Walking cost from the start node
-        int hCost = 0;      // Heuristic cost to reach end node
-        int fCost = 0;      // gCost + hCost
+        int gCost = int.MaxValue;       // Walking cost from the start node
+        int hCost = 0;                  // Heuristic cost to reach end node
+        int fCost = 0;                  // gCost + hCost
 
-        public PathNode previousNode = null;
+        bool isWalkable = true;
 
+        public PathNode cameFromNode = null;
+        #endregion
+
+        #region Properties
         public int X => x;
         public int Y => y;
         public int GCost
@@ -42,22 +47,34 @@ namespace PathFindingTC
             get => hCost;
         }
         public int FCost => fCost;
+        public bool IsWalkable => isWalkable;
+        #endregion
 
+        #region Constructor
         public PathNode(GridMap<PathNode> grid, int x, int y)
         {
             this.grid = grid;
             this.x = x;
             this.y = y;
         }
+        #endregion
 
-        public void CalculateFCost()
+        #region Functions
+        public void SetFCost()
         {
             fCost = gCost + hCost;
+        }
+
+        public void SetWalkable()
+        {
+            isWalkable = !isWalkable;
+            grid.OnGridValueChanged?.Invoke(x, y);
         }
 
         public override string ToString()
         {
             return x + ", " + y;
         }
+        #endregion
     }
 }

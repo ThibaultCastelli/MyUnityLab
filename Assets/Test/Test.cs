@@ -10,36 +10,6 @@ using MusicTC;
 using UnityEngine.SceneManagement;
 using PathFindingTC;
 
-public class GridObject
-{
-    public int maxValue;
-    public int minValue;
-
-    public bool value;
-
-    public GridMap<GridObject> grid;
-    public int x;
-    public int y;
-
-    public GridObject(GridMap<GridObject> grid, int x, int y)
-    {
-
-        this.grid = grid;
-        this.x = x;
-        this.y = y;
-    }
-
-    public void Add(bool value)
-    {
-        this.value = value;
-        grid.OnGridValueChanged(x, y);
-    }
-
-    public override string ToString()
-    {
-        return value.ToString();
-    }
-}
 public class Test : MonoBehaviour
 {
     public MusicEvent musicEventA;
@@ -53,12 +23,13 @@ public class Test : MonoBehaviour
     float elapsedTime = 0;
 
     PathFinding pathFinding;
-    public HeatMapVisualInt heatMapVisual;
+    public HeatMapPathFinding heatMapPathFinding;
+    public CharacterPathFindingMovement characterPathFinding;
 
     private void Awake()
     {
         pathFinding = new PathFinding(new Vector3(-10, -10), 12, 8, 5);
-        //heatMapVisual.grid = grid;
+        heatMapPathFinding.grid = pathFinding.Grid;
     }
 
     private void Update()
@@ -67,6 +38,7 @@ public class Test : MonoBehaviour
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mousePos.z = 0;
+            Debug.Log(mousePos);
             int x, y;
             pathFinding.Grid.GetCoordonates(mousePos, out x, out y);
             List<PathNode> path = pathFinding.FindPath(0, 0, x, y);
@@ -74,12 +46,15 @@ public class Test : MonoBehaviour
                 return;
             for (int i = 0; i < path.Count - 1; i++)
             {
-                Debug.DrawLine(new Vector3(path[i].X, path[i].Y) * 5 + pathFinding.Grid.Origin + Vector3.one * 2.5f, new Vector3(path[i + 1].X, path[i + 1].Y) * 5 + pathFinding.Grid.Origin + Vector3.one * 2.5f, Color.green, 100f);
+                Debug.DrawLine(new Vector3(path[i].X, path[i].Y) * 5 + pathFinding.Grid.Origin + Vector3.one * 2.5f, new Vector3(path[i + 1].X, path[i + 1].Y) * 5 + pathFinding.Grid.Origin + Vector3.one * 2.5f, Color.green, 100f, false);
             }
+            characterPathFinding.SetTargetPosition(mousePos);
         }
         if (Input.GetMouseButtonDown(1))
         {
-            
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mousePos.z = 0;
+            pathFinding.Grid.GetGridObject(mousePos).SetWalkable();
         }
         //testObj.transform.position = new Vector3(EasingFunctions.EaseInOutElastic(-4, 4, elapsedTime, 3), 0, 0);
         elapsedTime += Time.deltaTime;
