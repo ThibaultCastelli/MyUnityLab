@@ -52,12 +52,12 @@ public class Test : MonoBehaviour
     public GameObject testObj;
     float elapsedTime = 0;
 
-    GridMap<GridObject> grid;
+    PathFinding pathFinding;
     public HeatMapVisualInt heatMapVisual;
 
     private void Awake()
     {
-        grid = new GridMap<GridObject>(Vector3.zero, 5, 5, 5, (GridMap<GridObject> g, int x, int y) => new GridObject(g,x,y), this.transform);
+        pathFinding = new PathFinding(new Vector3(-10, -10), 12, 8, 5);
         //heatMapVisual.grid = grid;
     }
 
@@ -67,11 +67,19 @@ public class Test : MonoBehaviour
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mousePos.z = 0;
-            grid.GetGridObject(mousePos).Add(true);
+            int x, y;
+            pathFinding.Grid.GetCoordonates(mousePos, out x, out y);
+            List<PathNode> path = pathFinding.FindPath(0, 0, x, y);
+            if (path == null)
+                return;
+            for (int i = 0; i < path.Count - 1; i++)
+            {
+                Debug.DrawLine(new Vector3(path[i].X, path[i].Y) * 5 + pathFinding.Grid.Origin + Vector3.one * 2.5f, new Vector3(path[i + 1].X, path[i + 1].Y) * 5 + pathFinding.Grid.Origin + Vector3.one * 2.5f, Color.green, 100f);
+            }
         }
         if (Input.GetMouseButtonDown(1))
         {
-            grid.ResetGrid();
+            
         }
         //testObj.transform.position = new Vector3(EasingFunctions.EaseInOutElastic(-4, 4, elapsedTime, 3), 0, 0);
         elapsedTime += Time.deltaTime;
