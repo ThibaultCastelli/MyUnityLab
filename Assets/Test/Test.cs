@@ -28,7 +28,7 @@ public class Test : MonoBehaviour
 
     private void Awake()
     {
-        pathFinding = new PathFinding(new Vector3(-10, -10), 12, 8, 5);
+        pathFinding = new PathFinding(new Vector3(-10, -10), 30, 30, 1.5f);
         heatMapPathFinding.grid = pathFinding.Grid;
     }
 
@@ -38,16 +38,15 @@ public class Test : MonoBehaviour
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mousePos.z = 0;
-            Debug.Log(mousePos);
             int x, y;
             pathFinding.Grid.GetCoordonates(mousePos, out x, out y);
-            List<PathNode> path = pathFinding.FindPath(0, 0, x, y);
+            /*List<PathNode> path = pathFinding.FindPath(0, 0, x, y);
             if (path == null)
                 return;
             for (int i = 0; i < path.Count - 1; i++)
             {
                 Debug.DrawLine(new Vector3(path[i].X, path[i].Y) * 5 + pathFinding.Grid.Origin + Vector3.one * 2.5f, new Vector3(path[i + 1].X, path[i + 1].Y) * 5 + pathFinding.Grid.Origin + Vector3.one * 2.5f, Color.green, 100f, false);
-            }
+            }*/
             characterPathFinding.SetTargetPosition(mousePos);
         }
         if (Input.GetMouseButtonDown(1))

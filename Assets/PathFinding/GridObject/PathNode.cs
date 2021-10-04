@@ -11,6 +11,7 @@ namespace PathFindingTC
 
         int x;
         int y;
+        Vector2 pos;
 
         int gCost = int.MaxValue;       // Walking cost from the start node
         int hCost = 0;                  // Heuristic cost to reach end node
@@ -24,6 +25,7 @@ namespace PathFindingTC
         #region Properties
         public int X => x;
         public int Y => y;
+        public Vector2 Pos => pos;
         public int GCost
         {
             set
@@ -56,6 +58,7 @@ namespace PathFindingTC
             this.grid = grid;
             this.x = x;
             this.y = y;
+            pos = new Vector2(x, y);
         }
         #endregion
 

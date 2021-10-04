@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,8 +9,8 @@ namespace PathFindingTC
         #region Variables
         GridMap<PathNode> grid;
 
-        List<PathNode> openList;        // The nodes that need to be search
-        List<PathNode> closedList;      // List of nodes that had already been searched
+        List<PathNode> openList;                            // The nodes that need to be search
+        Dictionary<Vector2, PathNode> closedDictionary;     // The nodes that had already been searched
 
         const int STARIGHT_MOVE_COST = 10;
         const int DIAGONAL_MOVE_COST = 14;
@@ -23,13 +24,13 @@ namespace PathFindingTC
         #endregion
 
         #region Constructor
-        public PathFinding(Vector3 origin, int width, int height, int cellSize)
+        public PathFinding(Vector3 origin, int width, int height, float cellSize)
         {
             instance = this;
 
             grid = new GridMap<PathNode>(origin, width, height, cellSize, (GridMap<PathNode> g, int x, int y) => new PathNode(g, x, y));
             openList = new List<PathNode>();
-            closedList = new List<PathNode>();
+            closedDictionary = new Dictionary<Vector2, PathNode>();
         }
         #endregion
 
@@ -52,20 +53,21 @@ namespace PathFindingTC
         }
         public List<PathNode> FindPath(int xStart, int yStart, int xEnd, int yEnd)
         {
+            // Clear all the path nodes used in a previous FindPath call
+            foreach (PathNode node in openList)
+            {
+                node.GCost = int.MaxValue;
+                node.cameFromNode = null;
+            }
+            foreach (PathNode node in closedDictionary.Values)
+            {
+                node.GCost = int.MaxValue;
+                node.cameFromNode = null;
+            }
+
             // Clear the lists from previous operations
             openList.Clear();
-            closedList.Clear();
-
-            // Clear all the path nodes
-            for (int x = 0; x < grid.Width; x++)
-            {
-                for (int y = 0; y < grid.Height; y++)
-                {
-                    PathNode node = grid.GetGridObject(x, y);
-                    node.GCost = int.MaxValue;
-                    node.cameFromNode = null;
-                }
-            }
+            closedDictionary.Clear();
 
             // Set the end node
             PathNode endNode = grid.GetGridObject(xEnd, yEnd);
@@ -103,19 +105,20 @@ namespace PathFindingTC
 
                 // Take the node with the lowest fCost to be the next node on the path
                 openList.Remove(currentNode);
-                closedList.Add(currentNode);
+                if (!closedDictionary.ContainsKey(currentNode.Pos))
+                    closedDictionary.Add(currentNode.Pos, currentNode);
 
                 // Search for the neighbours of this node and add them to the open list
                 foreach (PathNode neighbour in FindNeighbours(currentNode))
                 {
                     // If the node has already been search or has already been set, skip
-                    if (closedList.Contains(neighbour))
+                    if (closedDictionary.ContainsKey(neighbour.Pos))
                         continue;
 
                     // If the node is not walkable just add to the closed list to be ignore next times
                     if (!neighbour.IsWalkable)
                     {
-                        closedList.Add(neighbour);
+                        closedDictionary.Add(neighbour.Pos, neighbour);
                         continue;
                     }
 
@@ -129,11 +132,7 @@ namespace PathFindingTC
                         neighbour.HCost = CalculateDistance(neighbour, endNode);
                         neighbour.SetFCost();
                         neighbour.cameFromNode = currentNode;
-
-                        if (!openList.Contains(neighbour))
-                        {
-                            openList.Add(neighbour);
-                        }
+                        openList.Add(neighbour);
                     }
                 }
             }

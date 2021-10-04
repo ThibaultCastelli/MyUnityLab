@@ -22,9 +22,6 @@ namespace PathFindingTC
 
             if (path != null && path.Count > 1)
                 path.RemoveAt(0);
-
-            foreach (var p in path)
-                Debug.Log(p);
         }
 
         void HandleMovement()
@@ -55,15 +52,5 @@ namespace PathFindingTC
         {
             HandleMovement();
         }
-
-        // Get an array of vector3
-
-        // Check if the character is at a greater distance than distMin to the next vector3
-
-        // If so continue to go towards it
-
-        // Else index++
-
-        // If no more vector3 stop
     }
 }
