@@ -49,7 +49,7 @@ public class Test : MonoBehaviour
             }*/
             characterPathFinding.SetTargetPosition(mousePos);
         }
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mousePos.z = 0;

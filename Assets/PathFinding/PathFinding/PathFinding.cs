@@ -31,6 +31,13 @@ namespace PathFindingTC
             grid = new GridMap<PathNode>(origin, width, height, cellSize, (GridMap<PathNode> g, int x, int y) => new PathNode(g, x, y));
             openList = new List<PathNode>();
             closedDictionary = new Dictionary<Vector2, PathNode>();
+
+            // Find the neighbours for every node of the grid
+            for (int x = 0; x < grid.Width; x++)
+            {
+                for (int y = 0; y < grid.Height; y++)
+                    grid.GetGridObject(x, y).FindNeighbours();
+            }
         }
         #endregion
 
@@ -53,6 +60,10 @@ namespace PathFindingTC
         }
         public List<PathNode> FindPath(int xStart, int yStart, int xEnd, int yEnd)
         {
+            // Return null if click on not walkabale node
+            if (!grid.GetGridObject(xEnd, yEnd).IsWalkable)
+                return null;
+
             // Clear all the path nodes used in a previous FindPath call
             foreach (PathNode node in openList)
             {
@@ -78,30 +89,17 @@ namespace PathFindingTC
             startNode.SetFCost();
             openList.Add(startNode);
 
+            PathNode currentNode = null;
+
             // Search a path while there is nodes to search in the open list
             while (openList.Count > 0)
             {
                 // Take the node with the lowestFCost 
-                PathNode currentNode = FindLowestFCost(openList);
+                currentNode = FindLowestFCost(openList);
 
                 // Check if this node is the end node, if so, return the path
                 if (currentNode == endNode)
-                {
-                    List<PathNode> path = new List<PathNode>();
-                    PathNode current = endNode;
-
-                    // Start from the end node and get all the came from nodes
-                    path.Add(current);
-                    while (current.cameFromNode != null)
-                    {
-                        path.Add(current.cameFromNode);
-                        current = current.cameFromNode;
-                    }
-
-                    // Reverse the path to get the path from start to end
-                    path.Reverse();
-                    return path;
-                }
+                    return GetPath(endNode);
 
                 // Take the node with the lowest fCost to be the next node on the path
                 openList.Remove(currentNode);
@@ -109,7 +107,7 @@ namespace PathFindingTC
                     closedDictionary.Add(currentNode.Pos, currentNode);
 
                 // Search for the neighbours of this node and add them to the open list
-                foreach (PathNode neighbour in FindNeighbours(currentNode))
+                foreach (PathNode neighbour in currentNode.Neighbours)
                 {
                     // If the node has already been search or has already been set, skip
                     if (closedDictionary.ContainsKey(neighbour.Pos))
@@ -128,7 +126,7 @@ namespace PathFindingTC
                     // Set the neighbour node if the gCost is less than the previous
                     if (gCostTentative < neighbour.GCost)
                     {
-                        neighbour.GCost = currentNode.GCost + CalculateDistance(currentNode, neighbour);
+                        neighbour.GCost = gCostTentative;
                         neighbour.HCost = CalculateDistance(neighbour, endNode);
                         neighbour.SetFCost();
                         neighbour.cameFromNode = currentNode;
@@ -136,8 +134,26 @@ namespace PathFindingTC
                     }
                 }
             }
-            // If goes out of the loop (open list is empty) return null (no path find)
-            return null;
+            // If goes out of the loop (open list is empty => no path find) go to the closest node you can reach
+            return GetPath(currentNode);
+        }
+
+        List<PathNode> GetPath(PathNode endNode)
+        {
+            List<PathNode> path = new List<PathNode>();
+            PathNode current = endNode;
+
+            // Start from the end node and get all the came from nodes
+            path.Add(current);
+            while (current.cameFromNode != null)
+            {
+                path.Add(current.cameFromNode);
+                current = current.cameFromNode;
+            }
+
+            // Reverse the path to get the path from start to end
+            path.Reverse();
+            return path;
         }
 
         int CalculateDistance(PathNode startNode, PathNode endNode)
@@ -159,49 +175,6 @@ namespace PathFindingTC
                     lowestFCost = nodes[i];
             }
             return lowestFCost;
-        }
-
-        List<PathNode> FindNeighbours(PathNode node)
-        {
-            List<PathNode> neighbours = new List<PathNode>();
-
-            // Left
-            if (node.X - 1 >= 0)
-            {
-                neighbours.Add(grid.GetGridObject(node.X - 1, node.Y));
-
-                // Left down
-                if (node.Y - 1 >= 0)
-                    neighbours.Add(grid.GetGridObject(node.X - 1, node.Y - 1));
-
-                //Left up
-                if (node.Y + 1 < grid.Height)
-                    neighbours.Add(grid.GetGridObject(node.X - 1, node.Y + 1));
-            }
-
-            // Right
-            if (node.X + 1 < grid.Width)
-            {
-                neighbours.Add(grid.GetGridObject(node.X + 1, node.Y));
-
-                // Right down
-                if (node.Y - 1 >= 0)
-                    neighbours.Add(grid.GetGridObject(node.X + 1, node.Y - 1));
-
-                // Right up
-                if (node.Y + 1 < grid.Height)
-                    neighbours.Add(grid.GetGridObject(node.X + 1, node.Y + 1));
-            }
-
-            // Up
-            if (node.Y + 1 < grid.Height)
-                neighbours.Add(grid.GetGridObject(node.X, node.Y + 1));
-
-            // Down
-            if (node.Y - 1 >= 0)
-                neighbours.Add(grid.GetGridObject(node.X, node.Y - 1));
-
-            return neighbours;
         }
         #endregion
     }
