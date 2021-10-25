@@ -10,6 +10,7 @@ namespace EasingTC
 
         Vector3 prevPos;
         bool prevPosFlag;
+        bool previousEndValue;
 
         private void OnEnable()
         {
@@ -19,6 +20,73 @@ namespace EasingTC
                 prevPos = _target.transform.localPosition;
             else
                 prevPos = _target.transform.position;
+
+            EditorApplication.playModeStateChanged += ResetFollowEndValue;
+        }
+
+        private void OnDisable()
+        {
+            // Reset follow end value when closing inspector.
+            if (target != null)
+                ResetFollowEndValue(PlayModeStateChange.ExitingEditMode);
+
+            EditorApplication.playModeStateChanged -= ResetFollowEndValue;
+        }
+
+        void ResetFollowEndValue(PlayModeStateChange state)
+        {
+            // Reset follow end value when going into play mode.
+            if (state == PlayModeStateChange.ExitingEditMode)
+            {
+                _target.followEndValue = false;
+                SetEndValue();
+            }
+        }
+
+        void SetEndValue()
+        {
+            if (_target.followEndValue)
+            {
+                if (!prevPosFlag)
+                {
+                    if (_target.useLocalPosition)
+                        prevPos = _target.transform.localPosition;
+                    else
+                        prevPos = _target.transform.position;
+                }
+                prevPosFlag = true;
+
+                if (_target.addPosition)
+                {
+                    if (_target.useLocalPosition)
+                        _target.transform.localPosition = prevPos + _target.addPos;
+                    else
+                        _target.transform.position = prevPos + _target.addPos;
+                }
+                else
+                {
+                    if (_target.useLocalPosition)
+                        _target.transform.localPosition = _target.endPos;
+                    else
+                        _target.transform.position = _target.endPos;
+                }
+            }
+            else
+            {
+                if (prevPosFlag)
+                {
+                    if (_target.useLocalPosition)
+                        _target.transform.localPosition = prevPos;
+                    else
+                        _target.transform.position = prevPos;
+                }
+                prevPosFlag = false;
+
+                if (_target.useLocalPosition)
+                    prevPos = _target.transform.localPosition;
+                else
+                    prevPos = _target.transform.position;
+            }
         }
 
         public override void OnInspectorGUI()
@@ -83,47 +151,10 @@ namespace EasingTC
             EditorGUILayout.LabelField("OPTIONS", EditorStyles.boldLabel);
             _target.followEndValue = EditorGUILayout.Toggle(new GUIContent("Follow End Value", "Select to see the end value you set."), _target.followEndValue);
 
-            if (_target.followEndValue)
+            if (_target.followEndValue != previousEndValue)
             {
-                if (!prevPosFlag)
-                {
-                    if (_target.useLocalPosition)
-                        prevPos = _target.transform.localPosition;
-                    else
-                        prevPos = _target.transform.position;
-                }
-                prevPosFlag = true;
-
-                if (_target.addPosition)
-                {
-                    if (_target.useLocalPosition)
-                        _target.transform.localPosition = prevPos + _target.addPos;
-                    else
-                        _target.transform.position = prevPos + _target.addPos;
-                }
-                else
-                {
-                    if (_target.useLocalPosition)
-                        _target.transform.localPosition = _target.endPos;
-                    else
-                        _target.transform.position = _target.endPos;
-                }
-            }
-            else
-            {
-                if (prevPosFlag)
-                {
-                    if (_target.useLocalPosition)
-                        _target.transform.localPosition = prevPos;
-                    else
-                        _target.transform.position = prevPos;
-                }
-                prevPosFlag = false;
-
-                if (_target.useLocalPosition)
-                    prevPos = _target.transform.localPosition;
-                else
-                    prevPos = _target.transform.position;
+                SetEndValue();
+                previousEndValue = _target.followEndValue;
             }
         }
     }

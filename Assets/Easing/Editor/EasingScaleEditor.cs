@@ -10,11 +10,57 @@ namespace EasingTC
 
         Vector3 prevScale;
         bool prevScaleFlag;
+        bool previousEndValue;
 
         private void OnEnable()
         {
             _target = (EasingScale)target;
             prevScale = _target.transform.localScale;
+            previousEndValue = _target.followEndValue;
+
+            EditorApplication.playModeStateChanged += ResetFollowEndValue;
+        }
+
+        private void OnDisable()
+        {
+            // Reset follow end value when closing inspector.
+            if (target != null)
+                ResetFollowEndValue(PlayModeStateChange.ExitingEditMode);
+
+            EditorApplication.playModeStateChanged -= ResetFollowEndValue;
+        }
+
+        void ResetFollowEndValue(PlayModeStateChange state)
+        {
+            // Reset follow end value when going into play mode.
+            if (state == PlayModeStateChange.ExitingEditMode)
+            {
+                _target.followEndValue = false;
+                SetEndValue();
+            }
+        }
+
+        void SetEndValue()
+        {
+            if (_target.followEndValue)
+            {
+                if (!prevScaleFlag)
+                    prevScale = _target.transform.localScale;
+                prevScaleFlag = true;
+
+                if (_target.addScale)
+                    _target.transform.localScale = prevScale + _target.addScl;
+                else
+                    _target.transform.localScale = _target.endScale;
+            }
+            else
+            {
+                if (prevScaleFlag)
+                    _target.transform.localScale = prevScale;
+                prevScaleFlag = false;
+
+                prevScale = _target.transform.localScale;
+            }
         }
 
         public override void OnInspectorGUI()
@@ -77,24 +123,10 @@ namespace EasingTC
             EditorGUILayout.LabelField("OPTIONS", EditorStyles.boldLabel);
             _target.followEndValue = EditorGUILayout.Toggle(new GUIContent("Follow End Value", "Select to see the end value you set."), _target.followEndValue);
 
-            if (_target.followEndValue)
+            if (_target.followEndValue != previousEndValue)
             {
-                if (!prevScaleFlag)
-                    prevScale = _target.transform.localScale;
-                prevScaleFlag = true;
-
-                if (_target.addScale)
-                    _target.transform.localScale = prevScale + _target.addScl;
-                else
-                    _target.transform.localScale = _target.endScale;
-            }
-            else
-            {
-                if (prevScaleFlag)
-                    _target.transform.localScale = prevScale;
-                prevScaleFlag = false;
-
-                prevScale = _target.transform.localScale;
+                SetEndValue();
+                previousEndValue = _target.followEndValue;
             }
         }
     }

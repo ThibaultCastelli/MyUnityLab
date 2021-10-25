@@ -10,12 +10,57 @@ namespace EasingTC
 
         Quaternion prevRot;
         bool prevRotFlag;
+        bool previousEndValue;
 
         private void OnEnable()
         {
             _target = (EasingRotation)target;
 
             prevRot = _target.transform.rotation;
+
+            EditorApplication.playModeStateChanged += ResetFollowEndValue;
+        }
+
+        private void OnDisable()
+        {
+            // Reset follow end value when closing inspector.
+            if (target != null)
+                ResetFollowEndValue(PlayModeStateChange.ExitingEditMode);
+
+            EditorApplication.playModeStateChanged -= ResetFollowEndValue;
+        }
+
+        void ResetFollowEndValue(PlayModeStateChange state)
+        {
+            // Reset follow end value when going into play mode.
+            if (state == PlayModeStateChange.ExitingEditMode)
+            {
+                _target.followEndValue = false;
+                SetEndValue();
+            }
+        }
+
+        void SetEndValue()
+        {
+            if (_target.followEndValue)
+            {
+                if (!prevRotFlag)
+                    prevRot = _target.transform.rotation;
+                prevRotFlag = true;
+
+                if (_target.addRotation)
+                    _target.transform.rotation = Quaternion.Euler(prevRot.eulerAngles + _target.addRot);
+                else
+                    _target.transform.rotation = Quaternion.Euler(_target.endRot);
+            }
+            else
+            {
+                if (prevRotFlag)
+                    _target.transform.rotation = prevRot;
+                prevRotFlag = false;
+
+                prevRot = _target.transform.rotation;
+            }
         }
 
         public override void OnInspectorGUI()
@@ -78,24 +123,10 @@ namespace EasingTC
             EditorGUILayout.LabelField("OPTIONS", EditorStyles.boldLabel);
             _target.followEndValue = EditorGUILayout.Toggle(new GUIContent("Follow End Value", "Select to see the end value you set."), _target.followEndValue);
 
-            if (_target.followEndValue)
+            if (_target.followEndValue != previousEndValue)
             {
-                if (!prevRotFlag)
-                    prevRot = _target.transform.rotation;
-                prevRotFlag = true;
-
-                if (_target.addRotation)
-                    _target.transform.rotation = Quaternion.Euler(prevRot.eulerAngles + _target.addRot);
-                else
-                    _target.transform.rotation = Quaternion.Euler(_target.endRot);
-            }
-            else
-            {
-                if (prevRotFlag)
-                    _target.transform.rotation = prevRot;
-                prevRotFlag = false;
-
-                prevRot = _target.transform.rotation;
+                SetEndValue();
+                previousEndValue = _target.followEndValue;
             }
         }
     }

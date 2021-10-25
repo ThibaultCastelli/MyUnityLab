@@ -11,6 +11,7 @@ namespace EasingTC
 
         Color prevColor;
         bool prevColorFlag;
+        bool previousEndValue;
 
         Renderer renderer = null;
         Image image = null;
@@ -30,7 +31,64 @@ namespace EasingTC
                     prevColor = image.color;
             }
             else
-                prevColor = renderer.material.color;
+                prevColor = renderer.sharedMaterial.color;
+
+            EditorApplication.playModeStateChanged += ResetFollowEndValue;
+        }
+
+        private void OnDisable()
+        {
+            // Reset follow end value when closing inspector.
+            if (target != null)
+                ResetFollowEndValue(PlayModeStateChange.ExitingEditMode);
+
+            EditorApplication.playModeStateChanged -= ResetFollowEndValue;
+        }
+
+        void ResetFollowEndValue(PlayModeStateChange state)
+        {
+            // Reset follow end value when going into play mode.
+            if (state == PlayModeStateChange.ExitingEditMode)
+            {
+                _target.followEndValue = false;
+                SetEndValue();
+            }
+        }
+
+        void SetEndValue()
+        {
+            if (_target.followEndValue)
+            {
+                if (!prevColorFlag)
+                {
+                    if (renderer != null)
+                        prevColor = renderer.sharedMaterial.color;
+                    else
+                        prevColor = image.color;
+                }
+                prevColorFlag = true;
+
+                if (renderer != null)
+                    renderer.sharedMaterial.color = _target.endColor;
+                else
+                    image.color = _target.endColor;
+            }
+            else
+            {
+                if (prevColorFlag)
+                {
+                    if (renderer != null)
+                        renderer.sharedMaterial.color = prevColor;
+                    else
+                        image.color = prevColor;
+                }
+                prevColorFlag = false;
+
+                if (renderer != null)
+                    prevColor = renderer.sharedMaterial.color;
+                else
+                    prevColor = image.color;
+            }
         }
 
         public override void OnInspectorGUI()
@@ -88,37 +146,10 @@ namespace EasingTC
             EditorGUILayout.LabelField("OPTIONS", EditorStyles.boldLabel);
             _target.followEndValue = EditorGUILayout.Toggle(new GUIContent("Follow End Value", "Select to see the end value you set."), _target.followEndValue);
 
-            if (_target.followEndValue)
+            if (_target.followEndValue != previousEndValue)
             {
-                if (!prevColorFlag)
-                {
-                    if (renderer != null)
-                        prevColor = renderer.material.color;
-                    else
-                        prevColor = image.color;
-                }
-                prevColorFlag = true;
-
-                if (renderer != null)
-                    renderer.material.color = _target.endColor;
-                else
-                    image.color = _target.endColor;
-            }
-            else
-            {
-                if (prevColorFlag)
-                {
-                    if (renderer != null)
-                        renderer.material.color = prevColor;
-                    else
-                        image.color = prevColor;
-                }
-                prevColorFlag = false;
-
-                if (renderer != null)
-                    prevColor = renderer.material.color;
-                else
-                    prevColor = image.color;
+                SetEndValue();
+                previousEndValue = _target.followEndValue;
             }
         }
     }

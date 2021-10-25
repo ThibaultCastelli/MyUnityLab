@@ -12,6 +12,7 @@ namespace EasingTC
 
         Color prevColor;
         bool prevColorFlag;
+        bool previousEndValue;
 
         TextMeshProUGUI TMP = null;
         Text text = null;
@@ -32,6 +33,63 @@ namespace EasingTC
             }
             else
                 prevColor = TMP.color;
+
+            EditorApplication.playModeStateChanged += ResetFollowEndValue;
+        }
+
+        private void OnDisable()
+        {
+            // Reset follow end value when closing inspector.
+            if (target != null)
+                ResetFollowEndValue(PlayModeStateChange.ExitingEditMode);
+
+            EditorApplication.playModeStateChanged -= ResetFollowEndValue;
+        }
+
+        void ResetFollowEndValue(PlayModeStateChange state)
+        {
+            // Reset follow end value when going into play mode.
+            if (state == PlayModeStateChange.ExitingEditMode)
+            {
+                _target.followEndValue = false;
+                SetEndValue();
+            }
+        }
+
+        void SetEndValue()
+        {
+            if (_target.followEndValue)
+            {
+                if (!prevColorFlag)
+                {
+                    if (TMP != null)
+                        prevColor = TMP.material.color;
+                    else
+                        prevColor = text.color;
+                }
+                prevColorFlag = true;
+
+                if (TMP != null)
+                    TMP.material.color = _target.endColor;
+                else
+                    text.color = _target.endColor;
+            }
+            else
+            {
+                if (prevColorFlag)
+                {
+                    if (TMP != null)
+                        TMP.material.color = prevColor;
+                    else
+                        text.color = prevColor;
+                }
+                prevColorFlag = false;
+
+                if (TMP != null)
+                    prevColor = TMP.material.color;
+                else
+                    prevColor = text.color;
+            }
         }
 
         public override void OnInspectorGUI()
@@ -89,37 +147,10 @@ namespace EasingTC
             EditorGUILayout.LabelField("OPTIONS", EditorStyles.boldLabel);
             _target.followEndValue = EditorGUILayout.Toggle(new GUIContent("Follow End Value", "Select to see the end value you set."), _target.followEndValue);
 
-            if (_target.followEndValue)
+            if (_target.followEndValue != previousEndValue)
             {
-                if (!prevColorFlag)
-                {
-                    if (TMP != null)
-                        prevColor = TMP.material.color;
-                    else
-                        prevColor = text.color;
-                }
-                prevColorFlag = true;
-
-                if (TMP != null)
-                    TMP.material.color = _target.endColor;
-                else
-                    text.color = _target.endColor;
-            }
-            else
-            {
-                if (prevColorFlag)
-                {
-                    if (TMP != null)
-                        TMP.material.color = prevColor;
-                    else
-                        text.color = prevColor;
-                }
-                prevColorFlag = false;
-
-                if (TMP != null)
-                    prevColor = TMP.material.color;
-                else
-                    prevColor = text.color;
+                SetEndValue();
+                previousEndValue = _target.followEndValue;
             }
         }
     }
