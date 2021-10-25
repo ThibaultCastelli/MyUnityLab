@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -20,7 +21,7 @@ namespace MusicTC
 
         [Header("COMPONENTS")]
         [Tooltip("A list of audio clips that represent different layers of a music.")]
-        [SerializeField] AudioClip[] musicLayers;
+        [SerializeField] AudioClip[] musicLayers = new AudioClip[1];
         [Tooltip("Mixer's group that will be assign to each music layer.")]
         [SerializeField] AudioMixerGroup mixerGroup;
         [Space]
@@ -62,6 +63,11 @@ namespace MusicTC
         public void Stop(float fadeTime = 0)
         {
             MusicManager.Instance.Stop(this, fadeTime);
+        }
+
+        public void SetLayer(int newLayer, float fadeTime = 0)
+        {
+            MusicManager.Instance.SetLayer(this, newLayer, fadeTime);
         }
 
         public void IncreaseLayer(float fadeTime = 0)

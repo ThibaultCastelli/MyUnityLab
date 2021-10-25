@@ -65,6 +65,14 @@ public class Test : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.A))
             musicEventA.Play();
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+            musicEventA.SetLayer(0);
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+            musicEventA.SetLayer(1);
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+            musicEventA.SetLayer(2);
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+            musicEventA.SetLayer(3);
 
         if (Input.GetKeyDown(KeyCode.Z))
             musicEventB.Play();

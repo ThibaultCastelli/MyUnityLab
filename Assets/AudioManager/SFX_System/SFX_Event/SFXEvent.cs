@@ -12,7 +12,7 @@ namespace SFXTC
 
         [Header("COMPONENTS")]
         [Tooltip("List of clips to be played.\n Only one will be randomly selected when playing.")]
-        [SerializeField] List<AudioClip> clips;
+        [SerializeField] List<AudioClip> clips = new List<AudioClip>();
 
         [Tooltip("Mixer's group that will be assign to the clip.")]
         [SerializeField] AudioMixerGroup mixerGroup;

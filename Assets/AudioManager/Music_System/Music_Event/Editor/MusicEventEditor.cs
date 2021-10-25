@@ -14,9 +14,10 @@ namespace MusicTC
         private void OnEnable()
         {
             _target = (MusicEvent)target;
+
             _previewers = new AudioSource[_target.MusicLayers.Length];
 
-            for (int i = 0; i < _target.MusicLayers.Length; i++)
+            for (int i = 0; i < _previewers.Length; i++)
                 _previewers[i] = EditorUtility.CreateGameObjectWithHideFlags("Audio Preview", HideFlags.HideAndDontSave, typeof(AudioSource)).GetComponent<AudioSource>();
         }
 
