@@ -4,31 +4,49 @@ using UnityEngine;
 
 namespace StateTC
 {
+    /// <summary>
+    /// Base class to create a State Machine pattern.
+    /// </summary>
     public abstract class StateMachine : MonoBehaviour
     {
-        // Keep track of current state
+        #region Properties
+        /// <summary>
+        /// Represent the current state of this machine.
+        /// </summary>
         public IState currentState { get; private set; }
-        // Keep track of previous state
-        public IState previousState { get; private set; }
 
-        // Change to the desired state
+        /// <summary>
+        /// Represent the previous state.
+        /// </summary>
+        public IState previousState { get; private set; }
+        #endregion
+
+        #region Functions
+        /// <summary>
+        /// Change current state to a new one.
+        /// </summary>
+        /// <param name="newState">The new state to set.</param>
         public void SetState(IState newState)
         {
             // Prevent from switching to a null state or to the same state
             if (newState == null || newState == currentState)
                 return;
 
+            // Exit and save the previous state
             if (currentState != null)
             {
                 currentState.OnExitState();
                 previousState = currentState;
             }
 
+            // Set and enter the new state
             currentState = newState;
             currentState.OnEnterState();
         }
 
-        // Switch to the previous state
+        /// <summary>
+        /// Switch to the previous state.
+        /// </summary>
         public void ReverseState()
         {
             if (currentState == null || previousState == null)
@@ -38,5 +56,6 @@ namespace StateTC
             currentState = previousState;
             previousState = temp;
         }
+        #endregion
     }
 }

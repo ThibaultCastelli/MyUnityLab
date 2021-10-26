@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace CommandTC
 {
+    /// <summary>
+    /// A stack of commands (used to undo)
+    /// </summary>
     public class CommandStack
     {
         Stack<ICommand> history = new Stack<ICommand>();

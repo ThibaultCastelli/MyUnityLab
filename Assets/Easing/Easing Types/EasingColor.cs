@@ -4,6 +4,9 @@ using UnityEngine.UI;
 
 namespace EasingTC
 {
+    /// <summary>
+    /// Handle the animation for colors (renderer or image).
+    /// </summary>
     public class EasingColor : EasingBase
     {
         #region Variables
@@ -28,6 +31,8 @@ namespace EasingTC
 
             // Select the animation and intialize default values
             animationToPlay = EaseColor;
+
+            // Get the renderer or image component
             if (!TryGetComponent<Renderer>(out renderer))
             {
                 if (!TryGetComponent<Image>(out image))
@@ -57,6 +62,12 @@ namespace EasingTC
         #endregion
 
         #region Functions
+        /// <summary>
+        /// Play the animation set in the inspector in mirror.
+        /// </summary>
+        /// <example>
+        /// On the first call, play the animation. On the second call, play the animation in reverse, etc etc...
+        /// </example>
         public override void PlayAnimationInOut()
         {
             newEndColor = newEndColor == endColor ? defaultStartColor : endColor;
@@ -65,6 +76,9 @@ namespace EasingTC
             base.PlayAnimationInOut();
         }
 
+        /// <summary>
+        /// The ease animation for color.
+        /// </summary>
         IEnumerator EaseColor()
         {
             while (true)

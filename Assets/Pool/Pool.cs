@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace PoolTC
 {
+    /// <summary>
+    /// Base class for creating a Pool pattern.
+    /// </summary>
     public class Pool : MonoBehaviour
     {
         #region Variables
@@ -40,6 +43,12 @@ namespace PoolTC
             }
         }
 
+        /// <summary>
+        /// Find and return the first inactive game object in the pool.
+        /// If none is available, returns a null object, or a new game object added to the pool 
+        /// depending on the type of pool it is.
+        /// </summary>
+        /// <returns>An inactive game object or a null game object.</returns>
         public GameObject Request()
         {
             for (int i = 0; i < pool.Count; i++)

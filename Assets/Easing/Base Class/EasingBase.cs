@@ -7,6 +7,9 @@ using TMPro;
 namespace EasingTC
 {
     #region Enums
+    /// <summary>
+    /// Represents the ease type.
+    /// </summary>
     public enum AnimationType
     {
         EaseIn,
@@ -15,6 +18,9 @@ namespace EasingTC
         SpecialEase,
         Mirror
     }
+    /// <summary>
+    /// Represents the ease in curves.
+    /// </summary>
     public enum EaseIn
     {
         Linear,
@@ -26,6 +32,9 @@ namespace EasingTC
         EaseInCirc,
         EaseInExpo,
     }
+    /// <summary>
+    /// Represents the ease out curves.
+    /// </summary>
     public enum EaseOut
     {
         EaseOutQuad,
@@ -35,6 +44,9 @@ namespace EasingTC
         EaseOutCirc,
         EaseOutExpo,
     }
+    /// <summary>
+    /// Represents the ease in out curves.
+    /// </summary>
     public enum EaseInOut
     {
         EaseInOutQuad,
@@ -43,12 +55,18 @@ namespace EasingTC
         EaseInOutQuint,
         EaseInOutCirc,
     }
+    /// <summary>
+    /// Represents the special ease curves.
+    /// </summary>
     public enum SpecialEase
     {
         EaseInBack,
         EaseOutBack,
         EaseOutBounce,
     }
+    /// <summary>
+    /// Represents the miror ease curves.
+    /// </summary>
     public enum MirorType
     {
         Linear,
@@ -59,6 +77,9 @@ namespace EasingTC
         EaseCirc,
         EaseExpo,
     }
+    /// <summary>
+    /// Represents the behaviour of the loop.
+    /// </summary>
     public enum LoopType
     {
         Simple,
@@ -66,6 +87,9 @@ namespace EasingTC
     }
     #endregion
 
+    /// <summary>
+    /// Base class to perform ease animations.
+    /// </summary>
     public abstract class EasingBase : MonoBehaviour
     {
         #region Variables
@@ -81,10 +105,15 @@ namespace EasingTC
         public LoopType loopType;
         [Range(0.1f, 20)] public float duration = 1;
 
-        public bool followEndValue;
+        public bool followEndValue; // If selected in Inspector, show the end state.
 
-        // Delegates to store the animation to play and the ease type to use
+        /// <summary>
+        /// Represent the animation to play
+        /// </summary>
         protected Func<IEnumerator> animationToPlay;
+        /// <summary>
+        /// Represent the curves to use for the animation
+        /// </summary>
         protected Func<float, float> easeFunc;
 
         // Use to know how much time is passed since the begining of the animation
@@ -229,7 +258,9 @@ namespace EasingTC
         #endregion
 
         #region Functions
-        // Reset the variables and play the animation selected on the Awake
+        /// <summary>
+        /// Play the animation set in the inspector.
+        /// </summary>
         public void PlayAnimation()
         {
             _isInTransition = true;
@@ -239,9 +270,12 @@ namespace EasingTC
             _hasPlayed = true;
         }
 
-        // On first call, will play the animation with input values
-        // On the second call, will play the animation in reverse
-        // etc etc...
+        /// <summary>
+        /// Play the animation set in the inspector in mirror.
+        /// </summary>
+        /// <example>
+        /// On the first call, play the animation. On the second call, play the animation in reverse, etc etc...
+        /// </example>
         public virtual void PlayAnimationInOut()
         {
             if (animationType == AnimationType.Mirror)

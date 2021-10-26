@@ -6,12 +6,13 @@ namespace ObserverTC
     [CustomEditor(typeof(NotifierBool))]
     public class NotifierBoolEditor : Editor
     {
-        NotifierBool notifier;
+        // Variables
+        NotifierBool _target;
         bool valueToNotify;
 
         private void OnEnable()
         {
-            notifier = (NotifierBool)target;
+            _target = (NotifierBool)target;
         }
 
         public override void OnInspectorGUI()
@@ -24,8 +25,10 @@ namespace ObserverTC
             GUI.enabled = Application.isPlaying;
 
             EditorGUILayout.Space();
+
+            // Button to locate the observers
             if (GUILayout.Button("Locate Observers", GUILayout.Height(30)))
-                notifier.LocateObservers();
+                _target.LocateObservers();
 
             EditorGUILayout.Space(10);
 
@@ -34,7 +37,7 @@ namespace ObserverTC
 
             // Button to notify observers
             if (GUILayout.Button("Notify Observers", GUILayout.Height(50)))
-                notifier.Notify(valueToNotify);
+                _target.Notify(valueToNotify);
         }
     }
 }

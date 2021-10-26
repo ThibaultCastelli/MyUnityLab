@@ -8,11 +8,12 @@ namespace EasingTC
     [CustomEditor(typeof(EasingTextColor))]
     public class EasingTextColorEditor : Editor
     {
+        // Variables
         EasingTextColor _target;
 
         Color prevColor;
         bool prevColorFlag;
-        bool previousEndValue;
+        bool previousFollowEndValue;
 
         TextMeshProUGUI TMP = null;
         Text text = null;
@@ -21,6 +22,7 @@ namespace EasingTC
         {
             _target = (EasingTextColor)target;
 
+            // Get the TextMeshPro or Text component.
             if (!_target.TryGetComponent<TextMeshProUGUI>(out TMP))
             {
                 if (!_target.TryGetComponent<Text>(out text))
@@ -34,6 +36,9 @@ namespace EasingTC
             else
                 prevColor = TMP.color;
 
+            previousFollowEndValue = _target.followEndValue;
+
+            // Prevent from keeping the followEndValue when exit edit mode.
             EditorApplication.playModeStateChanged += ResetFollowEndValue;
         }
 
@@ -46,17 +51,22 @@ namespace EasingTC
             EditorApplication.playModeStateChanged -= ResetFollowEndValue;
         }
 
+        /// <summary>
+        /// Reset follow end value when going into play mode.
+        /// </summary>
         void ResetFollowEndValue(PlayModeStateChange state)
         {
-            // Reset follow end value when going into play mode.
             if (state == PlayModeStateChange.ExitingEditMode)
             {
                 _target.followEndValue = false;
-                SetEndValue();
+                SetFollowEndValue();
             }
         }
 
-        void SetEndValue()
+        /// <summary>
+        /// Show the start or end color in edit mode.
+        /// </summary>
+        void SetFollowEndValue()
         {
             if (_target.followEndValue)
             {
@@ -94,6 +104,7 @@ namespace EasingTC
 
         public override void OnInspectorGUI()
         {
+            // Animation choice
             EditorGUILayout.LabelField("ANIMATION CHOICE", EditorStyles.boldLabel);
 
             _target.animationType = (AnimationType)EditorGUILayout.EnumPopup(new GUIContent("Animation Type", "Ease In : Start slow.\nEase Out : End slow.\nEase In Out : Start and end slow.\nMirror : Go back and forth.\nSpecial Ease : Bounce or back effect."), _target.animationType);
@@ -122,6 +133,8 @@ namespace EasingTC
             }
 
             EditorGUILayout.Space();
+
+            // Animation infos
             EditorGUILayout.LabelField("ANIMATION INFOS", EditorStyles.boldLabel);
 
             _target.playOnAwake = EditorGUILayout.Toggle(new GUIContent("Play On Awake", "Select if the animation should automatically start when the game start."), _target.playOnAwake);
@@ -131,9 +144,12 @@ namespace EasingTC
                 _target.loopType = (LoopType)EditorGUILayout.EnumPopup(new GUIContent("Loop Type", "Simple : Loop the animation.\nMirror : Loop the animation back and forth. (can't work with Mirror animation type"), _target.loopType);
 
             EditorGUILayout.Space();
+
             _target.useAnotherStartValue = EditorGUILayout.Toggle(new GUIContent("Use Another Start Color", "Select if you want to use a different start value.\nUnselect if you want to use the current value of the object as the start value."), _target.useAnotherStartValue);
 
             EditorGUILayout.Space();
+
+            // Animation values
             EditorGUILayout.LabelField("ANIMATION VALUES", EditorStyles.boldLabel);
 
             if (_target.useAnotherStartValue)
@@ -144,13 +160,16 @@ namespace EasingTC
 
             EditorGUILayout.Space();
 
+            // Options
             EditorGUILayout.LabelField("OPTIONS", EditorStyles.boldLabel);
+
             _target.followEndValue = EditorGUILayout.Toggle(new GUIContent("Follow End Value", "Select to see the end value you set."), _target.followEndValue);
 
-            if (_target.followEndValue != previousEndValue)
+            // Only set follow end value when clicking on it
+            if (_target.followEndValue != previousFollowEndValue)
             {
-                SetEndValue();
-                previousEndValue = _target.followEndValue;
+                SetFollowEndValue();
+                previousFollowEndValue = _target.followEndValue;
             }
         }
     }

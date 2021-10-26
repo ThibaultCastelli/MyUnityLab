@@ -6,12 +6,13 @@ namespace ObserverTC
     [CustomEditor(typeof(NotifierGameObject))]
     public class NotifierGameObjectEditor : Editor
     {
-        NotifierGameObject notifier;
+        // Variables
+        NotifierGameObject _target;
         GameObject valueToNotify;
 
         private void OnEnable()
         {
-            notifier = (NotifierGameObject)target;
+            _target = (NotifierGameObject)target;
         }
 
         public override void OnInspectorGUI()
@@ -24,17 +25,21 @@ namespace ObserverTC
             GUI.enabled = Application.isPlaying;
 
             EditorGUILayout.Space();
+
+            // Button to locate observers
             if (GUILayout.Button("Locate Observers", GUILayout.Height(30)))
-                notifier.LocateObservers();
+                _target.LocateObservers();
+
             EditorGUILayout.Space(10);
 
             // Toggle to choose the value to notify
             valueToNotify = (GameObject)EditorGUILayout.ObjectField("Value to notify (only for 'Notify Observers')", valueToNotify, typeof(GameObject), true);
 
             EditorGUILayout.Space();
+
             // Button to notify observers
             if (GUILayout.Button("Notify Observers", GUILayout.Height(50)))
-                notifier.Notify(valueToNotify);
+                _target.Notify(valueToNotify);
         }
     }
 }

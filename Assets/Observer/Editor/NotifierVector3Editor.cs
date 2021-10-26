@@ -6,12 +6,13 @@ namespace ObserverTC
     [CustomEditor(typeof(NotifierVector3))]
     public class NotifierVector3Editor : Editor
     {
-        NotifierVector3 notifier;
+        // Variables
+        NotifierVector3 _target;
         Vector3 valueToNotify;
 
         private void OnEnable()
         {
-            notifier = (NotifierVector3)target;
+            _target = (NotifierVector3)target;
         }
 
         public override void OnInspectorGUI()
@@ -24,8 +25,11 @@ namespace ObserverTC
             GUI.enabled = Application.isPlaying;
 
             EditorGUILayout.Space();
+
+            // Button to locate observers
             if (GUILayout.Button("Locate Observers", GUILayout.Height(30)))
-                notifier.LocateObservers();
+                _target.LocateObservers();
+
             EditorGUILayout.Space(10);
 
             // Vector2 field to choose the value to notify on X
@@ -33,9 +37,10 @@ namespace ObserverTC
             valueToNotify = EditorGUILayout.Vector3Field("", valueToNotify);
 
             EditorGUILayout.Space();
+
             // Button to notify observers
             if (GUILayout.Button("Notify Observers", GUILayout.Height(50)))
-                notifier.Notify(valueToNotify);
+                _target.Notify(valueToNotify);
         }
     }
 }

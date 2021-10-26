@@ -10,7 +10,7 @@ namespace ObserverTC
 
         [Tooltip("The reponse (function) to do when notify.")]
         public UnityEvent response;
-
+        
         // Add to the notifier's list of observers
         private void OnEnable()
         {

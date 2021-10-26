@@ -11,7 +11,10 @@ namespace ObserverTC
         // List of observers
         List<ObserverVector2> observers = new List<ObserverVector2>();
 
-        // Method to add an observer to the list
+        /// <summary>
+        /// Add an observer to this notifier's list.
+        /// </summary>
+        /// <param name="newObserver">The observer to add.</param>
         public void Subscribe(ObserverVector2 newObserver)
         {
             if (observers.Contains(newObserver))
@@ -20,7 +23,10 @@ namespace ObserverTC
             observers.Add(newObserver);
         }
 
-        // Method to remove an observer from the list
+        /// <summary>
+        /// Remove an observer from this notifier's list.
+        /// </summary>
+        /// <param name="observerToRemove">The observer to remove.</param>
         public void Unsubscribe(ObserverVector2 observerToRemove)
         {
             if (!observers.Contains(observerToRemove))
@@ -29,13 +35,18 @@ namespace ObserverTC
             observers.Remove(observerToRemove);
         }
 
-        // Method to noitfy all the observers
+        /// <summary>
+        /// Notify all the observers.
+        /// </summary>
         public void Notify(Vector2 value)
         {
             for (int i = observers.Count - 1; i >= 0; i--)
                 observers[i].response?.Invoke(value);
         }
 
+        /// <summary>
+        /// Used only for debug purpose. Display the location of each observer in this notifier's list.
+        /// </summary>
         public void LocateObservers()
         {
             Debug.Log($"Notifier '{name}' :");

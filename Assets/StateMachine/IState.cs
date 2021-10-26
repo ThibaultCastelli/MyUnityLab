@@ -1,15 +1,29 @@
 
 namespace StateTC
 {
+    /// <summary>
+    /// Interface of a state.
+    /// </summary>
     public interface IState
     {
-        // Automatically get called in the state machine
+        /// <summary>
+        /// Get called when entering this state.
+        /// </summary>
         void OnEnterState();
-        // Automatically get called in the state machine
+
+        /// <summary>
+        /// Get called when exiting this state.
+        /// </summary>
         void OnExitState();
-        // Simulate Update method
+
+        /// <summary>
+        /// Simulate the Update method.
+        /// </summary>
         void Tick();
-        // Simulate FixedUpdate method
+
+        /// <summary>
+        /// Simulate the FixedUpdate method.
+        /// </summary>
         void FixedTick();
     }
 }

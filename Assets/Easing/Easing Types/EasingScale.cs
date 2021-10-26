@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace EasingTC
 {
+    /// <summary>
+    /// Handle the animation for scale.
+    /// </summary>
     public class EasingScale : EasingBase
     {
         #region Variables
@@ -61,6 +64,12 @@ namespace EasingTC
         #endregion
 
         #region Functions
+        /// <summary>
+        /// Play the animation set in the inspector in mirror.
+        /// </summary>
+        /// <example>
+        /// On the first call, play the animation. On the second call, play the animation in reverse, etc etc...
+        /// </example>
         public override void PlayAnimationInOut()
         {
             if (addScale)
@@ -72,6 +81,9 @@ namespace EasingTC
             base.PlayAnimationInOut();
         }
 
+        /// <summary>
+        /// The ease animation for scale.
+        /// </summary>
         IEnumerator EaseScale()
         {
             while (true)
