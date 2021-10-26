@@ -8,6 +8,7 @@ namespace SFXTC
     [CustomEditor(typeof(SFXEvent))]
     public class SFXEventEditor : Editor
     {
+        // Variables
         SFXEvent _target;
 
         AudioSource _previewer;
@@ -21,11 +22,13 @@ namespace SFXTC
         {
             _target = (SFXEvent)target;
 
+            // Get the random values
             randomVolumeProperty = serializedObject.FindProperty("randomVolume");
             randomPanProperty = serializedObject.FindProperty("randomPan");
             randomPitchProperty = serializedObject.FindProperty("randomPitch");
             randomReverbProperty = serializedObject.FindProperty("randomReverbZoneMix");
 
+            // Create an audio source for previews
             _previewer = EditorUtility.CreateGameObjectWithHideFlags("Audio Preview", HideFlags.HideAndDontSave, typeof(AudioSource)).GetComponent<AudioSource>();
         }
 
@@ -40,6 +43,7 @@ namespace SFXTC
 
             EditorGUILayout.Space();
 
+            // Volume
             _target.useRandomVolume = EditorGUILayout.Toggle(new GUIContent("Use Random Volume", "Chose to use a fixed or a random value"), _target.useRandomVolume);
             if (_target.useRandomVolume)
                 EditorGUILayout.PropertyField(randomVolumeProperty, new GUIContent("Random Volume", "Select the volume of the clip.\nA random value will be chosen each it will be played.\n0 = no sound | 1 = full sound"), true);
@@ -48,6 +52,7 @@ namespace SFXTC
 
             EditorGUILayout.Space();
 
+            // Pan
             _target.useRandomPan = EditorGUILayout.Toggle(new GUIContent("Use Random Pan", "Chose to use a fixed or a random value"), _target.useRandomPan);
             if (_target.useRandomPan)
                 EditorGUILayout.PropertyField(randomPanProperty, new GUIContent("Random Pan", "Select the pan (earing from left or right) of the clip.\nA random value will be chosen each it will be played.\n-1 = left | 0 = center | 1 = right"));
@@ -56,6 +61,7 @@ namespace SFXTC
 
             EditorGUILayout.Space();
 
+            // Pitch
             _target.useRandomPitch = EditorGUILayout.Toggle(new GUIContent("Use Random Pitch", "Chose to use a fixed or a random value"), _target.useRandomPitch);
             if (_target.useRandomPitch)
                 EditorGUILayout.PropertyField(randomPitchProperty, new GUIContent("Random Pitch", "Select the pitch (lower or higher frequency) of the clip.\nA random value will be chosen each it will be played.\n0 = low | 1 = normal | 2 = high"));
@@ -64,6 +70,7 @@ namespace SFXTC
 
             EditorGUILayout.Space();
 
+            // Reverb mix
             _target.useRandomReverbZoneMix = EditorGUILayout.Toggle(new GUIContent("Use Random Reverb Zone Mix", "Chose to use a fixed or a random value"), _target.useRandomReverbZoneMix);
             if (_target.useRandomReverbZoneMix)
                 EditorGUILayout.PropertyField(randomReverbProperty, new GUIContent("Random Reverb Zone Mix", "Select how much the reverb zone affect the clip.\nA random value will be chosen each it will be played.\n0 = no reverb | 1 = normal"));
@@ -72,7 +79,7 @@ namespace SFXTC
 
             serializedObject.ApplyModifiedProperties();
 
-            // Preview Button
+            // Preview Buttons
             EditorGUILayout.Space(20);
 
             GUILayout.BeginHorizontal();

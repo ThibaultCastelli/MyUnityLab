@@ -8,6 +8,7 @@ namespace MusicTC
     [CustomEditor(typeof(MusicEvent))]
     public class MusicEventEditor : Editor
     {
+        // Variables
         MusicEvent _target;
         AudioSource[] _previewers;
 
@@ -15,14 +16,15 @@ namespace MusicTC
         {
             _target = (MusicEvent)target;
 
+            // Create one AudioSource for each layer of this MusicEvent to do previews.
             _previewers = new AudioSource[_target.MusicLayers.Length];
-
             for (int i = 0; i < _previewers.Length; i++)
                 _previewers[i] = EditorUtility.CreateGameObjectWithHideFlags("Audio Preview", HideFlags.HideAndDontSave, typeof(AudioSource)).GetComponent<AudioSource>();
         }
 
         private void OnDisable()
         {
+            // Destroy the previewers OnDisable
             foreach (AudioSource source in _previewers)
                 DestroyImmediate(source);
         }
@@ -36,6 +38,7 @@ namespace MusicTC
             // Only able to click when the game is not running
             GUI.enabled = !Application.isPlaying;
 
+            // Buttons to preview
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Preview", GUILayout.Height(50)))
                 _target.PlayPreview(_previewers);
@@ -49,8 +52,6 @@ namespace MusicTC
             if (GUILayout.Button("Decrease Layer", GUILayout.Height(50)))
                 _target.DecreaseLayerPreview(_previewers);
             GUILayout.EndHorizontal();
-
-            
         }
     }
 }

@@ -4,11 +4,17 @@ using UnityEngine;
 
 namespace MusicTC
 {
+    /// <summary>
+    /// Class to play MusicEvents.
+    /// </summary>
     public class MusicPlayer : MonoBehaviour
     {
         #region Variables
-        // The current MusicEvent
+        /// <summary>
+        /// The MusicEvent currently playing on this MusicPlayer.
+        /// </summary>
         public MusicEvent musicEvent;
+
         // List of the audio sources for each layer of the MusicEvent
         List<AudioSource> audioSources = new List<AudioSource>();
         #endregion
@@ -23,6 +29,11 @@ namespace MusicTC
         #endregion
 
         #region Functions
+        /// <summary>
+        /// Play a MusicEvent with the given fade in time and at first layer.
+        /// </summary>
+        /// <param name="musicEvent">The MusicEvent to play.</param>
+        /// <param name="fadeTime">How much time the fade in will take (in seconds).</param>
         public void Play(MusicEvent musicEvent, float fadeTime = 0)
         {
             // Prevent errors
@@ -60,6 +71,9 @@ namespace MusicTC
             }
         }
 
+        /// <summary>
+        /// Play a MusicEvent with no fade in and with additive layer type.
+        /// </summary>
         void PlayImmediatelyAdditive()
         {
             // Set the layers that are lower or equal to the current layer audible, mute the others
@@ -74,6 +88,9 @@ namespace MusicTC
                     audioSources[i].volume = 0;
             }
         }
+        /// <summary>
+        /// Play a MusicEvent with no fade in and with single layer type.
+        /// </summary>
         void PlayImmediatelySingle()
         {
             // Set the layers that are equal to the current layer audible, mute the others
@@ -89,6 +106,10 @@ namespace MusicTC
             }
         }
 
+        /// <summary>
+        /// Stop the current MusicEvent playing.
+        /// </summary>
+        /// <param name="fadeTime">How much time the fade out will take (in seconds).</param>
         public void Stop(float fadeTime)
         {
             // Prevent errors
@@ -113,6 +134,9 @@ namespace MusicTC
                 StartCoroutine(StopFade(fadeTime));
         }
 
+        /// <summary>
+        /// Stop the current MusicEvent playing with no fade out.
+        /// </summary>
         void StopImmediately()
         {
             // Stop all the audio sources and delete the current musicEvent;
@@ -122,6 +146,10 @@ namespace MusicTC
             musicEvent = null;
         }
 
+        /// <summary>
+        /// Give each layer of the new MusicEvent an audio source.
+        /// </summary>
+        /// <param name="newMusicEvent">The MusicEvent to set.</param>
         void SetAudioSources(MusicEvent newMusicEvent)
         {
             // Prevent errors
@@ -146,9 +174,12 @@ namespace MusicTC
             }
         }
 
+        /// <summary>
+        /// Get the volumes of each layer when starting a fade
+        /// </summary>
+        /// <returns>The volume of each layer.</returns>
         float[] GetStartVolumes()
         {
-            // Get the volumes of each layer when starting a fade
             float[] startVolumes = new float[musicEvent.MusicLayers.Length];
             for (int i = 0; i < musicEvent.MusicLayers.Length && i < audioSources.Count; i++)
                 startVolumes[i] = audioSources[i].volume;
@@ -158,6 +189,10 @@ namespace MusicTC
         #endregion
 
         #region Coroutines
+        /// <summary>
+        /// Play a MusicEvent with the given fade in time and with additive layer type.
+        /// </summary>
+        /// <param name="fadeTime">How much time the fade in/out will take (in seconds).</param>
         IEnumerator PlayFadeAdditive(float fadeTime)
         {
             // Initialization
@@ -187,6 +222,11 @@ namespace MusicTC
                 elapsedTime = Mathf.Clamp(elapsedTime + Time.deltaTime, 0, fadeTime);
             }
         }
+
+        /// <summary>
+        /// Play a MusicEvent with the given fade in time and with single layer type.
+        /// </summary>
+        /// <param name="fadeTime">How much time the fade in/out will take (in seconds).</param>
         IEnumerator PlayFadeSingle(float fadeTime)
         {
             // Initialization
@@ -217,6 +257,10 @@ namespace MusicTC
             }
         }
 
+        /// <summary>
+        /// Stop the currently MusicEvent playing with the given fade out time.
+        /// </summary>
+        /// <param name="fadeTime">How much time the fade out will take (in seconds).</param>
         IEnumerator StopFade(float fadeTime)
         {
             // Initialization

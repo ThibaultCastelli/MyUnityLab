@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace SFXTC
 {
+    /// <summary>
+    /// Class to manage all the SFXEvents and the audio source pool.
+    /// </summary>
     [RequireComponent(typeof(AudioSourcesPool))]
     public class SFXManager : MonoBehaviour
     {
@@ -61,6 +64,10 @@ namespace SFXTC
         #endregion
 
         #region Functions
+        /// <summary>
+        /// Play this SFX.
+        /// </summary>
+        /// <param name="SFX">The SFXEvent to play.</param>
         public void Play(SFXEvent SFX)
         {
             // Check if the SFX can be play at different audio source
@@ -82,6 +89,11 @@ namespace SFXTC
             SFX.source.Play();
         }
 
+        /// <summary>
+        /// Play this SFX with a delay.
+        /// </summary>
+        /// <param name="SFX">The SFXEvent to play.</param>
+        /// <param name="delay">How much delay before it plays (in seconds).</param>
         public void PlayDelayed(SFXEvent SFX, float delay)
         {
             // Check if the SFX can be play at different audio source
@@ -103,6 +115,11 @@ namespace SFXTC
             SFX.source.PlayDelayed(delay);
         }
 
+        /// <summary>
+        /// Play this SFX at scheduled time.
+        /// </summary>
+        /// <param name="SFX">The SFX to play.</param>
+        /// <param name="time">At which time the SFX should be played.</param>
         public void PlayScheduled(SFXEvent SFX, double time)
         {
             // Check if the SFX can be play at different audio source
@@ -124,6 +141,10 @@ namespace SFXTC
             SFX.source.PlayScheduled(time);
         }
 
+        /// <summary>
+        /// Stop this SFX.
+        /// </summary>
+        /// <param name="SFX">The SFXEvent to stop.</param>
         public void Stop(SFXEvent SFX)
         {
             // Use different behaviour based on the type of player selected
@@ -137,6 +158,10 @@ namespace SFXTC
                 SFX.source.Stop();
         }
 
+        /// <summary>
+        /// Pause this SFX.
+        /// </summary>
+        /// <param name="SFX">The SFXEvent to pause.</param>
         public void Pause(SFXEvent SFX)
         {
             // Use different behaviour based on the type of player selected
@@ -150,6 +175,10 @@ namespace SFXTC
                 SFX.source.Pause();
         }
 
+        /// <summary>
+        /// Unpause this SFX.
+        /// </summary>
+        /// <param name="SFX">The SFXEvent to unpause.</param>
         public void UnPause(SFXEvent SFX)
         {
             // Use different behaviour based on the type of player selected

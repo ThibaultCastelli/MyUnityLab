@@ -5,6 +5,9 @@ using UnityEngine.SceneManagement;
 
 namespace MusicTC
 {
+    /// <summary>
+    /// Class to manage all the MusicEvents and the MusicPlayers.
+    /// </summary>
     public class MusicManager : MonoBehaviour
     {
         #region Variables
@@ -24,15 +27,30 @@ namespace MusicTC
         MusicPlayer _musicPlayerA;
         MusicPlayer _musicPlayerB;
 
-        bool _isPlayingA = true;
+        bool _isPlayingA = true;    // Used to check wich MusicPlayer is currently active.
 
-        int _currentLayer;
+        int _currentLayer;          // Used to track which layer is active on the MusicEvent currently playing.
         #endregion
 
         #region Properties
+        /// <summary>
+        /// Represents the MusicPlayer currently active.
+        /// </summary>
         public MusicPlayer ActivePlayer => _isPlayingA ? _musicPlayerA : _musicPlayerB;
+
+        /// <summary>
+        /// Represents the MusicPlayer currently inactive.
+        /// </summary>
         public MusicPlayer InactivePlayer => _isPlayingA ? _musicPlayerB : _musicPlayerA;
+
+        /// <summary>
+        /// Represents which layer is active on the MusicEvent currently playing.
+        /// </summary>
         public int CurrentLayer => _currentLayer;
+
+        /// <summary>
+        /// Represents the maximum layers that MusicEvent can holds.
+        /// </summary>
         public int MaxLayerCount => maxLayerCount;
         #endregion
 
@@ -86,6 +104,7 @@ namespace MusicTC
 
         private void OnEnable()
         {
+            // When changing scene, check if the current MusicEvent should stop or not.
             SceneManager.sceneLoaded += StopOnSceneLoad;
         }
         private void OnDisable()
@@ -95,6 +114,11 @@ namespace MusicTC
         #endregion
 
         #region Functions
+        /// <summary>
+        /// Play a MusicEvent with the given fade in time and at first layer.
+        /// </summary>
+        /// <param name="musicEvent">The MusicEvent to play.</param>
+        /// <param name="fadeTime">How much time the fade in will take (in seconds).</param>
         public void Play(MusicEvent musicEvent, float fadeTime = 0)
         {
             // Prevent errors
@@ -132,6 +156,11 @@ namespace MusicTC
             ActivePlayer.Play(musicEvent, fadeTime);
         }
 
+        /// <summary>
+        /// Replay a MusicEvent with the given fade in time and at first layer.
+        /// </summary>
+        /// <param name="musicEvent">The MusicEvent to replay.</param>
+        /// <param name="fadeTime">How much time the fade in/out will take (in seconds).</param>
         public void Replay(MusicEvent musicEvent, float fadeTime = 0)
         {
             // Prevent errors
@@ -162,6 +191,11 @@ namespace MusicTC
             ActivePlayer.Play(musicEvent, fadeTime);
         }
 
+        /// <summary>
+        /// Stop a MusicEvent with the given fade out time.
+        /// </summary>
+        /// <param name="musicEvent">The MusicEvent to stop.</param>
+        /// <param name="fadeTime">How much time the fade out will take (in seconds).</param>
         public void Stop(MusicEvent musicEvent, float fadeTime = 0)
         {
             // Prevent errors
@@ -192,6 +226,12 @@ namespace MusicTC
             _isPlayingA = !_isPlayingA;
         }
 
+        /// <summary>
+        /// Set the layer to play with the given fade in time (different behaviour if the LayerType is Additive or Single).
+        /// </summary>
+        /// <param name="musicEvent">The MusicEvent to set.</param>
+        /// <param name="newLayer">Which layer to play.</param>
+        /// <param name="fadeTime">How much time the fade in will take (in seconds).</param>
         public void SetLayer(MusicEvent musicEvent, int newLayer, float fadeTime = 0)
         {
             // Prevent from changing the layer of the wrong music event
@@ -217,16 +257,27 @@ namespace MusicTC
             ActivePlayer.Play(_currentMusicEvent, fadeTime);
         }
 
+        /// <summary>
+        /// Go to the next layer with the given fade in time (different behaviour if the LayerType is Additive or Single).
+        /// </summary>
+        /// <param name="musicEvent">The MusicEvent to set.</param>
+        /// <param name="fadeTime">How much time the fade in will take (in seconds).</param>
         public void IncreaseLayer(MusicEvent musicEvent, float fadeTime = 0)
         {
             SetLayer(musicEvent, _currentLayer + 1, fadeTime);
         }
 
+        /// <summary>
+        /// Go to the previous layer with the given fade in time (different behaviour if the LayerType is Additive or Single).
+        /// </summary>
+        /// <param name="musicEvent">The MusicEvent to set.</param>
+        /// <param name="fadeTime">How much time the fade in will take (in seconds).</param>
         public void DecreaseLayer(MusicEvent musicEvent, float fadeTime = 0)
         {
             SetLayer(musicEvent, _currentLayer - 1, fadeTime);
         }
 
+        // Stop the active MusicEvent when changing scene if needed.
         void StopOnSceneLoad(Scene scene, LoadSceneMode loadSceneMode)
         {
             if (_currentMusicEvent != null && _currentMusicEvent.StopOnSceneChange)

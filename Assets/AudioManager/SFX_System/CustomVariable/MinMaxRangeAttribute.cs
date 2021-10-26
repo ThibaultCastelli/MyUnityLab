@@ -2,7 +2,9 @@ using UnityEngine;
 
 namespace SFXTC
 {
-    // Attribute to set the max and min values of RangedFloat
+    /// <summary>
+    /// Attribute to set the max and min values of RangedFloat
+    /// </summary>
     public class MinMaxRangeAttribute : PropertyAttribute
     {
         public float Min { get; private set; }
