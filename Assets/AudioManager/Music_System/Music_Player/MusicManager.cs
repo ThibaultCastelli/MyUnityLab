@@ -119,7 +119,7 @@ namespace MusicTC
         /// </summary>
         /// <param name="musicEvent">The MusicEvent to play.</param>
         /// <param name="fadeTime">How much time the fade in will take (in seconds).</param>
-        public void Play(MusicEvent musicEvent, float fadeTime = 0)
+        public void Play(MusicEvent musicEvent, float fadeTime = -1)
         {
             // Prevent errors
             if (musicEvent == null)
@@ -132,10 +132,10 @@ namespace MusicTC
                 Debug.LogError("ERROR : This MusicEvent is already playing.");
                 return;
             }
-            else if (fadeTime < 0)
+
+            if (fadeTime < 0)
             {
-                Debug.LogError("ERROR : The fade time can't be negative.");
-                return;
+                fadeTime = musicEvent.DefaultFadeTime;
             }
 
             // Use different behaviour based on the type of player selected
@@ -161,7 +161,7 @@ namespace MusicTC
         /// </summary>
         /// <param name="musicEvent">The MusicEvent to replay.</param>
         /// <param name="fadeTime">How much time the fade in/out will take (in seconds).</param>
-        public void Replay(MusicEvent musicEvent, float fadeTime = 0)
+        public void Replay(MusicEvent musicEvent, float fadeTime = -1)
         {
             // Prevent errors
             if (musicEvent == null)
@@ -174,10 +174,24 @@ namespace MusicTC
                 Debug.LogError("ERROR : The music event you try to replay is not the same that is currently playing.");
                 return;
             }
-            else if (fadeTime < 0)
+
+            if (fadeTime < 0)
             {
-                Debug.LogError("ERROR : The fade time can't be negative.");
-                return;
+                fadeTime = musicEvent.DefaultFadeTime;
+            }
+
+            Replay(fadeTime);
+        }
+
+        /// <summary>
+        /// Replay a MusicEvent with the given fade in time and at first layer.
+        /// </summary>
+        /// <param name="fadeTime">How much time the fade in/out will take (in seconds).</param>
+        public void Replay(float fadeTime = -1)
+        {
+            if (fadeTime < 0)
+            {
+                fadeTime = _currentMusicEvent.DefaultFadeTime;
             }
 
             // Use different behaviour based on the type of player selected
@@ -199,20 +213,35 @@ namespace MusicTC
         public void Stop(MusicEvent musicEvent, float fadeTime = 0)
         {
             // Prevent errors
+            if (musicEvent != ActivePlayer.musicEvent)
+            {
+                Debug.LogError("ERROR : This music event is not playing.");
+                return;
+            }
+
+            if (fadeTime < 0)
+            {
+                fadeTime = musicEvent.DefaultFadeTime;
+            }
+
+            Stop(fadeTime);
+        }
+
+        /// <summary>
+        /// Stop a MusicEvent with the given fade out time.
+        /// </summary>
+        /// <param name="fadeTime">How much time the fade out will take (in seconds).</param>
+        public void Stop(float fadeTime = -1)
+        {
             if (ActivePlayer.musicEvent == null)
             {
                 Debug.LogError("ERROR : There is no MusicEvent currently playing.");
                 return;
             }
-            else if (fadeTime < 0)
+
+            if (fadeTime < 0)
             {
-                Debug.LogError("ERROR : The fade time can't be negative.");
-                return;
-            }
-            else if (musicEvent != ActivePlayer.musicEvent)
-            {
-                Debug.LogError("ERROR : This music event is not playing.");
-                return;
+                fadeTime = _currentMusicEvent.DefaultFadeTime;
             }
 
             // Use different behaviour based on the type of player selected
@@ -232,7 +261,7 @@ namespace MusicTC
         /// <param name="musicEvent">The MusicEvent to set.</param>
         /// <param name="newLayer">Which layer to play.</param>
         /// <param name="fadeTime">How much time the fade in will take (in seconds).</param>
-        public void SetLayer(MusicEvent musicEvent, int newLayer, float fadeTime = 0)
+        public void SetLayer(MusicEvent musicEvent, int newLayer, float fadeTime = -1)
         {
             // Prevent from changing the layer of the wrong music event
             if (musicEvent != _currentMusicEvent)
@@ -240,10 +269,25 @@ namespace MusicTC
                 Debug.Log("ERROR : This music event needs to be playing in order to change its layer.");
                 return;
             }
+
             if (fadeTime < 0)
             {
-                Debug.LogError("ERROR : The fade time can't be negative.");
-                return;
+                fadeTime = musicEvent.DefaultFadeTime;
+            }
+
+            SetLayer(newLayer, fadeTime);
+        }
+
+        /// <summary>
+        /// Set the layer to play with the given fade in time (different behaviour if the LayerType is Additive or Single).
+        /// </summary>
+        /// <param name="newLayer">Which layer to play.</param>
+        /// <param name="fadeTime">How much time the fade in will take (in seconds).</param>
+        public void SetLayer(int newLayer, float fadeTime = -1)
+        {
+            if (fadeTime < 0)
+            {
+                fadeTime = _currentMusicEvent.DefaultFadeTime;
             }
 
             // Use different behaviour based on the type of player selected
@@ -262,9 +306,28 @@ namespace MusicTC
         /// </summary>
         /// <param name="musicEvent">The MusicEvent to set.</param>
         /// <param name="fadeTime">How much time the fade in will take (in seconds).</param>
-        public void IncreaseLayer(MusicEvent musicEvent, float fadeTime = 0)
+        public void IncreaseLayer(MusicEvent musicEvent, float fadeTime = -1)
         {
+            if (fadeTime < 0)
+            {
+                fadeTime = musicEvent.DefaultFadeTime;
+            }
+
             SetLayer(musicEvent, _currentLayer + 1, fadeTime);
+        }
+
+        /// <summary>
+        /// Go to the next layer with the given fade in time (different behaviour if the LayerType is Additive or Single).
+        /// </summary>
+        /// <param name="fadeTime">How much time the fade in will take (in seconds).</param>
+        public void IncreaseLayer(float fadeTime = -1)
+        {
+            if (fadeTime < 0)
+            {
+                fadeTime = _currentMusicEvent.DefaultFadeTime;
+            }
+
+            SetLayer(_currentLayer + 1, fadeTime);
         }
 
         /// <summary>
@@ -274,7 +337,26 @@ namespace MusicTC
         /// <param name="fadeTime">How much time the fade in will take (in seconds).</param>
         public void DecreaseLayer(MusicEvent musicEvent, float fadeTime = 0)
         {
+            if (fadeTime < 0)
+            {
+                fadeTime = musicEvent.DefaultFadeTime;
+            }
+
             SetLayer(musicEvent, _currentLayer - 1, fadeTime);
+        }
+
+        /// <summary>
+        /// Go to the previous layer with the given fade in time (different behaviour if the LayerType is Additive or Single).
+        /// </summary>
+        /// <param name="fadeTime">How much time the fade in will take (in seconds).</param>
+        public void DecreaseLayer(float fadeTime = -1)
+        {
+            if (fadeTime < 0)
+            {
+                fadeTime = _currentMusicEvent.DefaultFadeTime;
+            }
+
+            SetLayer(_currentLayer - 1, fadeTime);
         }
 
         // Stop the active MusicEvent when changing scene if needed.

@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 686efdaea1edf8940b8ea292d675ecbc, type: 3}
+  m_Name: OSEF
+  m_EditorClassIdentifier: 
+  description: 
+  clips:
+  - {fileID: 8300000, guid: e15868475c7b0484c8d924e4a310483c, type: 3}
+  - {fileID: 8300000, guid: e950ab7917e10874ab496a89b23c960e, type: 3}
+  - {fileID: 8300000, guid: ce2c800a2ed21d24387bfb4c2eb0f55f, type: 3}
+  mixerGroup: {fileID: 0}
+  playOnAwake: 0
+  loop: 0
+  mute: 0
+  bypassEffects: 0
+  bypassReverbZones: 0
+  multiplePlay: 1
+  priority: 134
+  useRandomVolume: 0
+  volume: 1
+  randomVolume:
+    minValue: 0.420023
+    maxValue: 0.79401624
+  useRandomPan: 0
+  pan: 0.074
+  randomPan:
+    minValue: -0.14959723
+    maxValue: 0.29919448
+  useRandomPitch: 0
+  pitch: 0.98
+  randomPitch:
+    minValue: 0.9090909
+    maxValue: 1.8066742
+  useRandomReverbZoneMix: 0
+  reverbZoneMix: 1
+  randomReverbZoneMix:
+    minValue: 0
+    maxValue: 0
+  source: {fileID: 0}
