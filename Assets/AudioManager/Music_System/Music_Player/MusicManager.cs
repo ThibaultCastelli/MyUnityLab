@@ -196,13 +196,13 @@ namespace MusicTC
 
             // Use different behaviour based on the type of player selected
             if (useLoggedMusicPlayer)
-                Debug.Log($"Replay {musicEvent.name} with a fade time of {fadeTime}s.");
+                Debug.Log($"Replay {_currentMusicEvent.name} with a fade time of {fadeTime}s.");
             if (useNullMusicPlayer)
                 return;
 
             // Stop the music event and replay it from the begining while keeping the same current layer
             Stop(ActivePlayer.musicEvent, fadeTime);
-            ActivePlayer.Play(musicEvent, fadeTime);
+            ActivePlayer.Play(_currentMusicEvent, fadeTime);
         }
 
         /// <summary>

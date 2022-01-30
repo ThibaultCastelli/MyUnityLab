@@ -93,38 +93,38 @@ namespace MusicTC
         /// Play this MusicEvent with the given fade in time and at first layer.
         /// </summary>
         /// <param name="fadeTime">How much time the fade in will take (in seconds).</param>
-        public void Play(float fadeTime = defaultFadeTime) { MusicManager.Instance.Play(this, fadeTime); }
+        public void Play(float fadeTime = -1) { MusicManager.Instance.Play(this, fadeTime); }
 
         /// <summary>
         /// Replay this MusicEvent with the given fade in time and at first layer.
         /// </summary>
         /// <param name="fadeTime">How much time the fade in/out will take (in seconds).</param>
-        public void Replay(float fadeTime = defaultFadeTime) { MusicManager.Instance.Replay(this, fadeTime); }
+        public void Replay(float fadeTime = -1) { MusicManager.Instance.Replay(this, fadeTime); }
 
         /// <summary>
         /// Stop this MusicEvent with the given fade out time.
         /// </summary>
         /// <param name="fadeTime">How much time the fade out will take (in seconds).</param>
-        public void Stop(float fadeTime = defaultFadeTime) { MusicManager.Instance.Stop(this, fadeTime); }
+        public void Stop(float fadeTime = -1) { MusicManager.Instance.Stop(this, fadeTime); }
 
         /// <summary>
         /// Set the layer to play with the given fade in time (different behaviour if the LayerType is Additive or Single).
         /// </summary>
         /// <param name="newLayer">Wich layer to play.</param>
         /// <param name="fadeTime">How much time the fade in will take (in seconds).</param>
-        public void SetLayer(int newLayer, float fadeTime = defaultFadeTime) { MusicManager.Instance.SetLayer(this, newLayer, fadeTime); }
+        public void SetLayer(int newLayer, float fadeTime = -1) { MusicManager.Instance.SetLayer(this, newLayer, fadeTime); }
 
         /// <summary>
         /// Go to the next layer with the given fade in time (different behaviour if the LayerType is Additive or Single).
         /// </summary>
         /// <param name="fadeTime">How much time the fade in will take (in seconds).</param>
-        public void IncreaseLayer(float fadeTime = defaultFadeTime) { MusicManager.Instance.IncreaseLayer(this, fadeTime); }
+        public void IncreaseLayer(float fadeTime = -1) { MusicManager.Instance.IncreaseLayer(this, fadeTime); }
 
         /// <summary>
         /// Go to the previous layer with the given fade in time (different behaviour if the LayerType is Additive or Single).
         /// </summary>
         /// <param name="fadeTime">How much time the fade in will take (in seconds).</param>
-        public void DecreaseLayer(float fadeTime = defaultFadeTime) { MusicManager.Instance.DecreaseLayer(this, fadeTime); }
+        public void DecreaseLayer(float fadeTime = -1) { MusicManager.Instance.DecreaseLayer(this, fadeTime); }
         #endregion
 
         #region Preview Functions
