@@ -5,7 +5,7 @@ using Grid2DTC;
 
 public class TestGrid : MonoBehaviour
 {
-    Grid2D<bool> grid;
+    Grid2D<int> grid;
 
     [Range(0, 20f)] public float cellWidth;
     [Range(0, 20f)] public float cellHeight;
@@ -14,11 +14,17 @@ public class TestGrid : MonoBehaviour
 
     private void Awake()
     {
-        grid = new Grid2D<bool>(3, 3, new Vector2(0, 0), 10, 10, true);
+        grid = new Grid2D<int>(true);
     }
 
     private void Update()
     {
         grid.FollowChangedValues(width, height, transform.position, cellWidth, cellHeight);
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            
+            grid.SetCellValue(Input.mousePosition, grid.GetCellValue(Input.mousePosition) + 1);
+        }
     }
 }

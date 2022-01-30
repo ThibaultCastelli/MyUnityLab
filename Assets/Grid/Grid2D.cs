@@ -3,17 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 namespace Grid2DTC
 {
     public class Grid2D<T>
     {
-        // Créer une grille à l'endroit voulu, avec la taille de cellule choisie, et le type d'objet qui peut être placé dedans
-        // Possibilité d'afficher ou non la grille
-        // Récuperer les coordonées de la cellule où l'utilisateur à cliquer
-        // Récuperer l'object contenu dans la cellule voulue
-        // Changer la valeur de l'objet contenu dans la cellule voulue
-
         #region Variables
         private T[,] grid;
 
@@ -24,21 +19,36 @@ namespace Grid2DTC
         private float cellWidth;
         private float cellHeight;
 
-        private int defaultWidth = 1;
-        private int defaultHeight = 1;
-        private float defaultCellWidth = 1;
-        private float defaultCellHeight = 1;
+        private static int defaultWidth = 2;
+        private static int defaultHeight = 2;
+        private static Vector2 defaultOrigin = Vector2.zero;
+        private static float defaultCellWidth = 1;
+        private static float defaultCellHeight = 1;
 
         private bool showGrid;
         private GameObject canvasGO;
         private GameObject[,] debugTextGrid;
+
+        public Action OnValueChange;
         #endregion
 
         #region Properties
+        public int Width => width;
+        public int Height => height;
 
+        public Vector2 Origin => origin;
+        public float CellWidth => cellWidth;
+        public float CellHeight => cellHeight;
         #endregion
 
-        #region Constructor
+        #region Constructors
+        public Grid2D(bool showGrid = false) : this(defaultWidth, defaultHeight, defaultOrigin, defaultCellWidth, 
+            defaultCellHeight, showGrid) { }
+        public Grid2D(int width, int height, bool showGrid = false) : this(width, height, defaultOrigin, 
+            defaultCellWidth, defaultCellHeight, showGrid) { }
+        public Grid2D(int width, int height, float cellWidth, float cellHeight, bool showGrid = false) : this(width, height, 
+            defaultOrigin, cellWidth, cellHeight, showGrid) { }
+
         public Grid2D(int width, int height, Vector2 origin, float cellWidth, float cellHeight, bool showGrid = false)
         {
             if (width < 1)
@@ -85,6 +95,7 @@ namespace Grid2DTC
             this.showGrid = showGrid;
             if (showGrid)
             {
+                OnValueChange += PrintGrid;
                 InitializeGridPrint();
                 PrintGrid();
             }
@@ -92,13 +103,6 @@ namespace Grid2DTC
         #endregion
 
         #region Functions
-        public Vector2 GetWorldPos(int x, int y)
-        {
-            float xPos = ((x * cellWidth) + origin.x) + (cellWidth / 2);
-            float yPos = ((y * cellHeight) + origin.y) + (cellHeight / 2);
-            return new Vector2(xPos, yPos);
-        }
-
         public void SetCellValue(int x, int y, T newValue)
         {
             if (x < 0 || y < 0 || x >= grid.GetLength(0) || y >= grid.GetLength(1))
@@ -108,6 +112,15 @@ namespace Grid2DTC
             }
 
             grid[x, y] = newValue;
+            OnValueChange?.Invoke();
+        }
+
+        public void SetCellValue(Vector2 pos, T newValue)
+        {
+            int x, y;
+            GetCellCoordonates(pos, out x, out y);
+
+            SetCellValue(x, y, newValue);
         }
 
         public T GetCellValue(int x, int y)
@@ -121,6 +134,36 @@ namespace Grid2DTC
             return grid[x, y];
         }
 
+        public T GetCellValue(Vector2 pos)
+        {
+            int x, y;
+            GetCellCoordonates(pos, out x, out y);
+
+            return GetCellValue(x, y);
+        }
+        #endregion
+
+        #region Helper Functions
+        private Vector2 GetCelldPos(int x, int y)
+        {
+            float xPos = ((x * cellWidth) + origin.x) + (cellWidth / 2);
+            float yPos = ((y * cellHeight) + origin.y) + (cellHeight / 2);
+            return new Vector2(xPos, yPos);
+        }
+
+        private void GetCellCoordonates(Vector2 pos, out int x, out int y)
+        {
+            Vector3 worldPos = GetWorldPos(pos);
+
+            x = Mathf.FloorToInt((worldPos.x - origin.x) / cellWidth);
+            y = Mathf.FloorToInt((worldPos.y - origin.y) / cellHeight);
+        }
+
+        private Vector3 GetWorldPos(Vector2 screenPos)
+        {
+            Vector3 pos = new Vector3(screenPos.x, screenPos.y, -Camera.main.transform.position.z);
+            return Camera.main.ScreenToWorldPoint(pos);
+        }
         #endregion
 
         #region Debug Functions
@@ -221,7 +264,7 @@ namespace Grid2DTC
             {
                 for (int j = 0; j < grid.GetLength(1); j++)
                 {
-                    Vector2 cellPos = GetWorldPos(i, j);
+                    Vector2 cellPos = GetCelldPos(i, j);
 
                     PrintCellLine(cellPos);
                     PrintCellContent(i, j, cellPos, grid[i, j].ToString());
@@ -245,7 +288,7 @@ namespace Grid2DTC
         private void PrintCellContent(int i, int j, Vector2 pos, string content)
         {
             GameObject txtGO = debugTextGrid[i, j];
-            txtGO.transform.position = GetWorldPos(i, j);
+            txtGO.transform.position = GetCelldPos(i, j);
 
             TextMeshProUGUI txt = txtGO.GetComponent<TextMeshProUGUI>();
             txt.fontSize = cellWidth / 4;
