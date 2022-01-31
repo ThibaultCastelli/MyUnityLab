@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Grid2DTC;
+using TetrisInventoryTC;
 
 public class TestGrid : MonoBehaviour
 {

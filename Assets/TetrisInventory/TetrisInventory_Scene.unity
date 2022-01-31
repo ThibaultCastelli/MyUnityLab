@@ -227,7 +227,7 @@ GameObject:
   - component: {fileID: 671415224}
   - component: {fileID: 671415223}
   m_Layer: 0
-  m_Name: Test
+  m_Name: Inventory
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -242,13 +242,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 671415222}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3aa39d0177202e842b06ea180bcbbf1d, type: 3}
+  m_Script: {fileID: 11500000, guid: b32f55b7c55b50945a210d7ca2896a8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  defaultItem: {fileID: 11400000, guid: 7a740117d9990db4cadcc24c08165d79, type: 2}
+  width: 5
+  height: 5
   cellWidth: 2
   cellHeight: 2
-  width: 3
-  height: 3
 --- !u!4 &671415224
 Transform:
   m_ObjectHideFlags: 0

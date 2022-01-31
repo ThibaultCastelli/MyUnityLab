@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 
-namespace Grid2DTC
+namespace TetrisInventoryTC
 {
     public class Grid2D<T>
     {
@@ -141,6 +141,19 @@ namespace Grid2DTC
 
             return GetCellValue(x, y);
         }
+
+        public void FillGrid(T filler)
+        {
+            for (int i = 0; i < grid.GetLength(0); i++)
+            {
+                for (int j = 0; j < grid.GetLength(1); j++)
+                {
+                    grid[i, j] = filler;
+                }
+            }
+
+            OnValueChange?.Invoke();
+        }
         #endregion
 
         #region Helper Functions
@@ -193,6 +206,7 @@ namespace Grid2DTC
             height = newHeight;
 
             grid = new T[width, height];
+
             canvasGO.SetActive(false);
 
             if (showGrid)
@@ -267,7 +281,7 @@ namespace Grid2DTC
                     Vector2 cellPos = GetCelldPos(i, j);
 
                     PrintCellLine(cellPos);
-                    PrintCellContent(i, j, cellPos, grid[i, j].ToString());
+                    PrintCellContent(i, j, cellPos);
                 }
             }
 
@@ -285,7 +299,7 @@ namespace Grid2DTC
             Debug.DrawLine(start, new Vector2(start.x, start.y + cellHeight), Color.black, 0.01f);
         }
 
-        private void PrintCellContent(int i, int j, Vector2 pos, string content)
+        private void PrintCellContent(int i, int j, Vector2 pos)
         {
             GameObject txtGO = debugTextGrid[i, j];
             txtGO.transform.position = GetCelldPos(i, j);
@@ -294,7 +308,15 @@ namespace Grid2DTC
             txt.fontSize = cellWidth / 4;
             txt.color = Color.black;
             txt.alignment = TextAlignmentOptions.Midline;
-            txt.text = content;
+
+            if (grid[i, j] == null)
+            {
+                txt.text = "null";
+            }
+            else
+            {
+                txt.text = grid[i, j].ToString();
+            }
         }
         #endregion
     }
